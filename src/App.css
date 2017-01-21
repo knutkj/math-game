@@ -1,0 +1,63 @@
+html, body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+body {
+    text-align: center;
+    transition: background-color 1s;
+}
+body:before {
+    content: "";
+    height: 100%;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+:global(#task), :global(#answer) {
+    font: 200px segoe ui;
+    display: inline-block;
+    vertical-align: middle;
+}
+:global(#done-message) {
+    display: none;
+    font: 100px segoe ui;
+}
+:global(#answer) {
+    outline: none;
+    border: none;
+    width: 2.2ex;
+    background: transparent;
+}
+form {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+:global(.correct) {
+    background-color: green;
+}
+:global(.wrong) {
+    background-color: red;
+}
+:global(#next-button) {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font: 50px segoe ui;
+}
+:global(#stats) {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    font: 50px segoe ui;
+}
+
+.app {
+    display: block;
+}

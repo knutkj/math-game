@@ -1,0 +1,41 @@
+.task {
+    margin: 0;
+    padding: 20px;
+    position: relative;
+    background: rgba(255, 255, 255, .5);
+}
+
+.help {
+    font: 15px segoe ui;
+    position: absolute;
+    left: 0;
+    bottom: 10px;
+}
+
+.helpItem {
+    position: relative;
+    display: inline-block;
+    color: white;
+    padding: 5px;
+    margin-left: 10px;
+    width: 32px;
+    text-align: center;
+}
+
+.left {
+    background-color: black;
+}
+
+.right {
+    background-color: gray;
+}
+
+.answer:before {
+    content: "";
+    position: absolute;
+    height: 4px;
+    right: 0;
+    bottom: -7px;
+    left: 0;
+    background-color: black;
+}
