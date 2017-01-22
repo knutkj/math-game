@@ -1,8 +1,10 @@
 import * as React from "react";
-import { taskCollections, ITaskCollection, tasks, setTask } from "../task";
+import { taskCollections, ITaskCollection, tasks } from "../task";
 
 export default class TaskCollectionPicker
     extends React.Component<{}, {}> {
+
+    static contextTypes = { router: React.PropTypes.object.isRequired };
 
     render() {
         return (
@@ -16,7 +18,7 @@ export default class TaskCollectionPicker
 
     onPicked(taskCollection: ITaskCollection<any>) {
         tasks.push.apply(tasks, taskCollection.tasks);
-        setTask();
+        this.context.router.push("/tasks");
     }
 
 }

@@ -1,0 +1,50 @@
+#taskHost {
+    height: 100vh;
+    transition: background-color 1s;
+    text-align: center;
+}
+
+#taskHost:before {
+    content: "";
+    height: 100%;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#taskHost, #answer {
+    font: 200px segoe ui;
+    vertical-align: middle;
+}
+
+#doneMessage {
+    font: 100px segoe ui;
+}
+
+#answer {
+    outline: none;
+    border: none;
+    width: 3ex;
+    background: transparent;
+}
+
+.correct {
+    background-color: green;
+}
+
+.wrong {
+    background-color: red;
+}
+
+#nextButton {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font: 50px segoe ui;
+}
+
+#stats {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    font: 50px segoe ui;
+}

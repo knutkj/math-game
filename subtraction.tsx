@@ -2,7 +2,9 @@ import { range } from "underscore";
 import * as React from "react";
 import { ITaskProps, /*ITask,*/ taskCollections } from "./task";
 import createTasks from "./src/createTasks";
-const styles = require("./subtraction.css");
+
+const styles = require<any>("./subtraction.css");
+const taskStyles = require<any>("./src/Task.css");
 
 interface ISubtractionTaskProps extends ITaskProps {
     task: string;
@@ -26,17 +28,21 @@ class SubtractionTask
     }
 
     componentWillReceiveProps(newProps) {
-        this.setState({ value: "", wrong: false });
-        this.setMembersFromProps(newProps);
+        if (this.props.task !== newProps.task) {
+            this.setState({ value: "", wrong: false });
+            this.setMembersFromProps(newProps);
+        }
     }
 
     render() {
         return (
-            <form className={styles.task}>
-                <div id="task">{this.props.task}=</div>
+            <form className={styles.subtractionTask}>
+                <div className={styles.text}>
+                    {this.props.task}=
+                </div>
                 <input
                     ref={e => this.element = e}
-                    id="answer"
+                    id={taskStyles.answer}
                     onChange={this.onChange.bind(this)}
                     value={this.state.value}
                     type="number"
@@ -51,7 +57,7 @@ class SubtractionTask
     }
 
     getHelp() {
-        const items = [];
+        const items: React.ReactElement<{}>[] = [];
         let currentAnswer = parseInt(this.state.value || "-1", 0);
         for (var i = 0; i < this.left; i++) {
             const classNames = [

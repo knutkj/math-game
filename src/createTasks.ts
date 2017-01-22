@@ -1,12 +1,10 @@
-import { ITaskProps, ITask, onReset, onCorrect, onWrong } from "../task";
+import { ITaskProps, ITask } from "../task";
 
 export default function createTasks<T extends ITaskProps>(
     tasks: string[],
-    component,
-    taskProps: Readonly<ITaskProps> =
-        { onReset, onCorrect, onWrong }) {
-    return tasks.map(task => ({        
-        props: { task: task, ...taskProps },
+    component) {
+    return tasks.map(task => ({
+        props: { task: task },
         numCorrect: 0,
         numWrong: 0,
         component: component

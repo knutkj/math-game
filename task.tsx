@@ -1,5 +1,7 @@
+import { defer } from "underscore";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+
+const styles = require<any>("./src/Task.css");
 
 export interface ITaskProps {
     onReset: () => void;
@@ -8,50 +10,95 @@ export interface ITaskProps {
 }
 
 export interface ITask<T extends ITaskProps> {
-    component: any;
-    props: T;
+    readonly component: any;
+    readonly props: T;
     numCorrect: number;
     numWrong: number;
 }
 
 export interface ITaskCollection<T extends ITaskProps> {
-    name: string;
-    tasks: ITask<T>[];
+    readonly name: string;
+    readonly tasks: ITask<T>[];
 }
 
 export const taskCollections: ITaskCollection<any>[] = []
 
 export const tasks: ITask<any>[] = [];
 
-var taskElement = document.querySelector("#task") as HTMLElement;
-var answerInput = document.querySelector("#answer") as HTMLElement;
-var nextButton = document.querySelector("#next-button") as HTMLElement;
-var statsElement = document.querySelector("#stats") as HTMLElement;
-
 var currentTask;
 
-export function setTask () {
-    resetApp();
-    var task = currentTask = getTask();
-    if (task) {
-        ReactDOM.render(
-            <task.component {...task.props} />,
-            taskElement);
-        updateStats();
-    } else {
-        document.querySelector("body").className = "correct";
-        (document.querySelector("#done-message") as HTMLElement).style.display = "inline";
-        taskElement.style.display = "none";
-        statsElement.style.display = "none";
-        answerInput.style.display = "none";
-        nextButton.style.display = "none";
-    }
+interface ITaskHostState {
+    readonly task: ITask<ITaskProps>;
+    readonly state: "active" | "correct" | "wrong";
 }
 
-window["setTask"] = setTask;
+export default class TaskHost extends React.Component<{}, ITaskHostState> {
 
-function resetApp() {
-    document.querySelector("body").className = "";
+    private nextButton: HTMLButtonElement;
+
+    constructor(props, context) {
+        super(props, context);
+        this.state = {
+            task: getTask(),
+            state: "active"
+        };
+        currentTask = this.state.task;
+    }
+
+    render() {
+        return this.state.task ? this.renderTask() : this.renderDone();
+    }
+
+    renderTask() {
+        const { task, state } = this.state;
+        currentTask = task;
+        return (
+            <div id={styles.taskHost} className={styles[state]}>
+                <this.state.task.component
+                    {...this.state.task.props}
+                    onCorrect={this.onCorrect.bind(this)}
+                    onWrong={this.onWrong.bind(this)}
+                    onReset={this.onReset.bind(this)} />
+                <button
+                    ref={e => this.nextButton = e}
+                    id={styles.nextButton}
+                    onClick={this.onNextTaskClick.bind(this)}>
+                    Neste oppgave
+                </button>
+                <div id={styles.stats}>
+                    {`Rett: ${task.numCorrect} | Feil: ${task.numWrong}`}
+                </div>
+            </div>
+        );
+    }
+
+    renderDone() {
+        currentTask = null;
+        return (
+            <div id={styles.taskHost} className={styles.correct}>
+                <span id={styles.doneMessage}>Du klarte alle!</span>
+            </div>
+        );
+    }
+
+    onNextTaskClick() {
+        this.setState({ task: getTask(), state: "active" });
+    }
+
+    onCorrect() {
+        this.state.task.numCorrect++;
+        this.setState({ ...this.state, state: "correct" });
+        defer(() => this.nextButton.focus());
+    }
+
+    onWrong() {
+        currentTask.numWrong++;
+        this.setState({ ...this.state, state: "wrong" });
+    }
+
+    onReset() {
+        this.setState({ ...this.state, state: "active" });
+    }
 }
 
 function getTask() {
@@ -67,35 +114,4 @@ function getTask() {
         task = tasks[Math.round(Math.random() * tasks.length)];
     } while (!task || task.numCorrect >= correctLimit);
     return task;
-}
-
-function updateStats() {
-    statsElement.innerHTML =
-        "Rett: " + currentTask.numCorrect +" | " +
-        "Feil: " + currentTask.numWrong;
-}
-
-export function onReset() {
-    document.querySelector("body").className = "";
-}
-
-export function onCorrect() {
-    currentTask.numCorrect++;
-    document.querySelector("body").className = "correct";
-    nextButton.focus();
-    updateStats();
-}
-
-export function onWrong() {
-    currentTask.numWrong++;
-    document.querySelector("body").className = "wrong";
-    updateStats();
-}
-
-import TaskCollectionPicker from "./src/TaskCollectionPicker";
-
-export function pickTasks (onPicked) {
-    ReactDOM.render(
-        <TaskCollectionPicker onPicked={onPicked} />,
-        taskElement);
 }

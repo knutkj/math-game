@@ -1,8 +1,13 @@
-.task {
+.subtractionTask {
+    display: inline-block;
     margin: 0;
     padding: 20px;
     position: relative;
     background: rgba(255, 255, 255, .5);
+}
+
+.text {
+    display: inline-block;
 }
 
 .help {

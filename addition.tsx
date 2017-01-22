@@ -1,7 +1,10 @@
 import * as React from "react";
-import { ITaskProps, /*ITask,*/ taskCollections } from "./task";
+import { ITaskProps, taskCollections } from "./task";
 import { range } from "underscore";
 import createTasks from "./src/createTasks";
+
+const styles = require<any>("./src/Addition.css");
+const taskStyles = require<any>("./src/Task.css");
 
 interface IAdditionTaskProps extends ITaskProps {
     task: string;
@@ -25,17 +28,21 @@ class AdditionTask
     }
 
     componentWillReceiveProps(newProps) {
-        this.setState({ value: "" });
-        this.setMembersFromProps(newProps);
+        if (this.props.task !== newProps.task) {
+            this.setState({ value: "" });
+            this.setMembersFromProps(newProps);
+        }
     }
 
     render() {
         return (
-            <form>
-                <div id="task">{this.props.task}=</div>
+            <form className={styles.additionTask}>
+                <div className={styles.text}>
+                    {this.props.task}=
+                </div>
                 <input
                     ref={e => this.element = e}
-                    id="answer"
+                    id={taskStyles.answer}
                     onChange={this.onChange.bind(this)}
                     value={this.state.value}
                     type="number"
