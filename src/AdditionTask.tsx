@@ -1,10 +1,10 @@
 import * as React from "react";
-import { ITaskProps, taskCollections } from "./task";
+import { ITaskProps, taskCollections } from "./TaskHost";
 import { range } from "underscore";
-import createTasks from "./src/createTasks";
+import createTasks from "./createTasks";
 
-const styles = require<any>("./src/Addition.css");
-const taskStyles = require<any>("./src/Task.css");
+const styles = require<any>("./AdditionTask.css");
+const taskStyles = require<any>("./TaskHost.css");
 
 interface IAdditionTaskProps extends ITaskProps {
     task: string;

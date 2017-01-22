@@ -3,13 +3,13 @@ import * as ReactDOM from "react-dom";
 import { Router, IndexRoute, Route, hashHistory } from "react-router";
 import App from "./src/App";
 import TaskCollectionPicker from "./src/TaskCollectionPicker";
-import TaskHost from "./task";
+import TaskHost from "./src/TaskHost";
 
 //
 // Importing tasks.
 //
-import "./addition.tsx";
-import "./subtraction.tsx";
+import "./src/AdditionTask.tsx";
+import "./src/SubtractionTask.tsx";
 
 const appElement = document.querySelector("#app");
 if (!appElement) {

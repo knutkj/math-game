@@ -1,4 +1,4 @@
-import { ITaskProps, ITask } from "../task";
+import { ITaskProps, ITask } from "./TaskHost";
 
 export default function createTasks<T extends ITaskProps>(
     tasks: string[],

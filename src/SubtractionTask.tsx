@@ -1,10 +1,10 @@
 import { range } from "underscore";
 import * as React from "react";
-import { ITaskProps, /*ITask,*/ taskCollections } from "./task";
-import createTasks from "./src/createTasks";
+import { ITaskProps, taskCollections } from "./TaskHost";
+import createTasks from "./createTasks";
 
-const styles = require<any>("./subtraction.css");
-const taskStyles = require<any>("./src/Task.css");
+const styles = require<any>("./SubtractionTask.css");
+const taskStyles = require<any>("./TaskHost.css");
 
 interface ISubtractionTaskProps extends ITaskProps {
     task: string;

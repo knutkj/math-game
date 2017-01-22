@@ -1,5 +1,5 @@
 import * as React from "react";
-import { taskCollections, ITaskCollection, tasks } from "../task";
+import { taskCollections, ITaskCollection, tasks } from "./TaskHost";
 
 export default class TaskCollectionPicker
     extends React.Component<{}, {}> {

@@ -1,7 +1,7 @@
 import { defer } from "underscore";
 import * as React from "react";
 
-const styles = require<any>("./src/Task.css");
+const styles = require<any>("./TaskHost.css");
 
 export interface ITaskProps {
     onReset: () => void;
