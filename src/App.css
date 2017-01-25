@@ -1,6 +1,31 @@
+@font-face {
+    font-family: chalk;
+    src: url("fonts/Sensible_Schooling.otf") format("opentype");
+}
+html {
+    font-size: 50px;
+}
+
 html, body {
     padding: 0;
     margin: 0;
+    height: 100%;
+}
+
+body {
+    background-image: url("images/chalk-background.jpg");
+    background-size: cover;
+    font-family: chalk;
+    color: #ddd;
+    text-shadow: 0 0 5px rgba(0, 0, 0, .75)
+}
+
+h1 {
+    color: pink;
+    text-align: center;
+    margin: 0;
+    padding: 0.5em;
+    letter-spacing: 8px;
 }
 
 input[type=number]::-webkit-inner-spin-button,

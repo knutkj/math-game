@@ -4,12 +4,13 @@ module.exports = {
         filename: "app.js"
     },
     resolve: {
-        extensions: ["", ".js", ".ts", ".tsx", ".css"]
+        extensions: ["", ".js", ".ts", ".tsx"]
     },
     module: {
         loaders: [
             { test: /\.tsx?$/i, loader: "ts" },
-            { test: /\.css$/i,  loader: "style!css?modules&localIdentName=[name]-[local]" }
+            { test: /\.css$/i,  loader: "style!css?-url&modules&localIdentName=[name]-[local]" },
+            { test: /\.less$/i,  loader: "style!css?-url&modules&localIdentName=[name]-[local]!less" }
         ]
     }
 };

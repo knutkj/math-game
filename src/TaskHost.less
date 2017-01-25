@@ -1,0 +1,130 @@
+@fontSize: 8rem;
+@emoticonSize: 8rem;
+
+#taskHost {
+    height: 100vh;
+    transition: background-color 1s;
+    font-size: @fontSize;
+    /*width: @fontSize * 2.5;*/
+    margin: 0 auto;
+    position: relative;
+    text-align: center;
+
+    &:before {
+        content: "";
+        height: 100%;
+        display: inline-block;
+        vertical-align: middle;
+    }
+}
+
+@keyframes new {
+    from {
+        transform: translate(0, -100vh);
+    }
+    to {
+        transform: translate(0, 0);
+    }
+}
+
+/*
+ * Correct.
+ */
+
+@correctAnimationDuration: .3s;
+@correctAnimationDelay:    .5s;
+
+.correct {
+    animation:
+        correct
+        @correctAnimationDuration
+        ease-in
+        @correctAnimationDelay
+        forwards;
+}
+
+#correctReaction {
+    opacity: 1;
+    position: absolute;
+    width: @emoticonSize;
+    height: @emoticonSize;
+    top: -@emoticonSize;
+    left: 50%;
+    transform: translate(-(@emoticonSize / 2), 0);
+    transition: opacity 0;
+}
+
+@keyframes correct {
+    from {
+        transform: translate(0, 0);
+    }
+    to {
+        transform: translate(0, calc(~"50vh + " @emoticonSize / 2));
+    }
+}
+
+/*
+ * Wrong.
+ */
+
+.wrong {
+    animation: wrong .3s ease-in-out;
+}
+
+#wrongReaction {
+    position: absolute;
+    width: 4rem;
+    height: 4rem;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-2rem, 4rem);
+    transition: transform 0s;
+}
+
+.wrong {
+    #wrongReaction {
+        transform: translate(-2rem, -1rem);
+        transition: transform .3s;
+    }
+}
+
+@keyframes wrong {
+    from {
+        transform: translate(0, 0);
+    }
+    25% {
+        transform: translate(.5em, 0);
+    }
+
+    50% {
+        transform: translate(0, 0);
+    }
+
+    75% {
+        transform: translate(.5em, 0);
+    }
+
+    to {
+        transform: translate(0, 0);
+    }
+}
+
+/*
+ * Obsolete???
+ */
+
+#nextButton {
+    display: none;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font: 50px segoe ui;
+}
+
+#stats {
+    font-size: 1rem;
+    position: fixed;
+    left: 10px;
+    bottom: 10px;
+    display: none;
+}

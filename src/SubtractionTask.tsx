@@ -1,71 +1,48 @@
 import { range } from "underscore";
 import * as React from "react";
-import { ITaskProps, taskCollections } from "./TaskHost";
-import createTasks from "./createTasks";
+import { TaskState, ITask } from "./TaskHost";
+import store from "./store";
 
 const styles = require<any>("./SubtractionTask.css");
-const taskStyles = require<any>("./TaskHost.css");
 
-interface ISubtractionTaskProps extends ITaskProps {
+interface ISubtractionTaskProps {
     task: string;
+    state: TaskState;
+    value: number | null;
+    answer: number;
 }
 
 //interface ISubtractionTask extends ITask<ISubtractionTaskProps> {}
 
 class SubtractionTask
-    extends React.Component<ISubtractionTaskProps, { value?: string, wrong?: boolean }> {
-
-    element: HTMLInputElement;
-    left: number;
-    right: number;
-    answer: number;
-    done: boolean;
-
-    constructor(props: ISubtractionTaskProps) {
-        super(props);
-        this.state = { value: "", wrong: false };
-        this.setMembersFromProps(props);
-    }
-
-    componentWillReceiveProps(newProps) {
-        if (this.props.task !== newProps.task) {
-            this.setState({ value: "", wrong: false });
-            this.setMembersFromProps(newProps);
-        }
-    }
+    extends React.Component<ISubtractionTaskProps, {}> {
 
     render() {
         return (
             <form className={styles.subtractionTask}>
                 <div className={styles.text}>
-                    {this.props.task}=
+                    {this.props.task}={this.props.value}
                 </div>
-                <input
-                    ref={e => this.element = e}
-                    id={taskStyles.answer}
-                    onChange={this.onChange.bind(this)}
-                    value={this.state.value}
-                    type="number"
-                    maxLength={2} />
-                {this.state.wrong ?
+                {this.props.state === "wrong" ?
                 <div className={styles.help}>
-                    {this.getHelp()}
+                    {this.renderHelp()}
                 </div> :
                 null}
             </form>
         );
     }
 
-    getHelp() {
+    renderHelp() {
+        const [left] = this.props.task.split("-").map(parseInt);
         const items: React.ReactElement<{}>[] = [];
-        let currentAnswer = parseInt(this.state.value || "-1", 0);
-        for (var i = 0; i < this.left; i++) {
+        let currentAnswer = this.props.value || -1;
+        for (var i = 0; i < left; i++) {
             const classNames = [
                 styles.helpItem,
                 i < currentAnswer ?
                     styles.answer :
                     "",
-                i < this.answer ?
+                i < this.props.answer ?
                     styles.left :
                     styles.right
             ].join(" ");
@@ -77,65 +54,69 @@ class SubtractionTask
         }
         return items;
     }
+}
 
-    componentDidMount() {
-        this.element.focus();
+/**
+ * Represents a subtraction task.
+ */
+class Subtraction implements ITask {
+
+    readonly component = SubtractionTask;
+    numCorrect = 0;
+    numWrong = 0;
+
+    constructor(
+        public readonly task: string) {
     }
 
-    componentDidUpdate() {
-        !this.done && this.element.focus();
-    }
-
-    onChange() {
-        const value = this.element.value;
-
-        this.setState({ value: value.substr(0, 2) });
-
-        const numberOfChars = value.length;
-        const parsedValue = parseInt(this.element.value, 10);
-
+    getState(value: number): TaskState {
+        const numberOfChars = `${value}`.length;
+        const answer = this.getAnswer();
         if (numberOfChars === 0) {
-            this.props.onReset();
-        } else if (parsedValue === this.answer) {
-            this.done = true;
-            this.props.onCorrect();
-        } else if (numberOfChars === ("" + this.answer).length) {
-            this.props.onWrong();
-            this.setState({ wrong: true });
+            return "active";
+        } else if (value === answer) {
+            return "correct";
+        } else if (numberOfChars === ("" + answer).length) {
+            return "wrong";
         }
+        return "active";
     }
 
-    setMembersFromProps(props: ISubtractionTaskProps) {
-        this.done = false;
-        const task = props.task;
-        this.left = parseInt(task.split("-")[0], 0);
-        this.right = parseInt(task.split("-")[1], 0);
-        this.answer = this.left - this.right;
+    getAnswer(): number {
+        const [left, right] = this.getNumbers();
+        return left - right;
+    }
+
+    getNumbers() {
+        return this.task.split("-").map(t => parseInt(t, 10));
     }
 }
 
-taskCollections.push({
-    name: "Minus 0-10",
-    tasks: createTasks(
-        createSubtractionStrings(0, 10),
-        SubtractionTask)
+store.dispatch({
+    type: "add-task-collection",
+    value: {
+        name: "Minus 0-10",
+        tasks: createSubtractionStrings(0, 10).map(t => new Subtraction(t))
+    }
 });
 
-taskCollections.push({
-    name: "Minus 10-20",
-    tasks: createTasks(
-        createSubtractionStrings(10, 20),
-        SubtractionTask)
+store.dispatch({
+    type: "add-task-collection",
+    value: {
+        name: "Minus 10-20",
+        tasks: createSubtractionStrings(10, 20).map(t => new Subtraction(t))
+    }
 });
 
-taskCollections.push({
-    name: "Minus 0-20",
-    tasks: createTasks(
-        createSubtractionStrings(0, 20),
-        SubtractionTask)
+store.dispatch({
+    type: "add-task-collection",
+    value: {
+        name: "Minus 0-20",
+        tasks: createSubtractionStrings(0, 20).map(t => new Subtraction(t))
+    }
 });
 
-function createSubtractionStrings(start: number, stop: number) {
+export function createSubtractionStrings(start: number, stop: number) {
     const strings: string[] = [];
     for (let i = start; i <= stop; i++) {
         strings.push.apply(
