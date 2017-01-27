@@ -6,7 +6,6 @@
     transition: background-color 1s;
     font-size: @fontSize;
     /*width: @fontSize * 2.5;*/
-    margin: 0 auto;
     position: relative;
     text-align: center;
 
@@ -27,9 +26,9 @@
     }
 }
 
-/*
- * Correct.
- */
+//
+// Correct.
+//
 
 @correctAnimationDuration: .3s;
 @correctAnimationDelay:    .5s;
@@ -63,9 +62,9 @@
     }
 }
 
-/*
- * Wrong.
- */
+//
+// Wrong.
+//
 
 .wrong {
     animation: wrong .3s ease-in-out;
@@ -109,9 +108,22 @@
     }
 }
 
-/*
- * Obsolete???
- */
+//
+// Clock.
+//
+
+.clock {
+    position: absolute;
+    padding: 20px;
+    top: 0;
+    right: 0;
+    font-size: .75rem;
+    color: gray;
+}
+
+//
+// Obsolete???
+//
 
 #nextButton {
     display: none;

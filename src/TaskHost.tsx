@@ -1,6 +1,6 @@
-import { defer } from "underscore";
 import * as React from "react";
 import { getSelectedTasks } from "./store";
+import store from "./store";
 
 const styles = require<any>("./TaskHost.less");
 
@@ -26,12 +26,6 @@ export interface ITask {
 export interface ITaskCollection {
     readonly name: string;
     readonly tasks: ITask[];
-}
-
-interface ITaskHostState {
-    readonly task: ITask | null;
-    readonly state: TaskState;
-    readonly value: string;
 }
 
 const correctEmoticons = ([] as string[]).concat(
@@ -178,8 +172,14 @@ const wrongEmoticons = ([] as string[]).concat(
 
 function pickEmoticon(emoticon) {
     const index = Math.round(Math.random() * emoticon.length - .5);
-    console.log(index, emoticon.length);
     return emoticon[index];
+}
+
+interface ITaskHostState {
+    readonly task: ITask | null;
+    readonly state: TaskState;
+    readonly value: string;
+    readonly duration: number;
 }
 
 /**
@@ -197,7 +197,8 @@ export default class TaskHost extends React.Component<{}, ITaskHostState> {
         this.state = {
             task: getTask(),
             state: "active",
-            value: ""
+            value: "",
+            duration: getDuration()
         };
         this.keyListener = this.onKeyDown.bind(this);
         addEventListener("keydown", this.keyListener);
@@ -211,27 +212,32 @@ export default class TaskHost extends React.Component<{}, ITaskHostState> {
 
     renderTask(task: ITask) {
         return (
-            <div
-                id={styles.taskHost}
-                className={styles[this.state.state]}
-                onAnimationEnd={this.onAnimationEnd.bind(this)}>
+            <div>
+                <Timer
+                    duration={300 * 1000}
+                    onOutOfTime={this.onOutOfTime.bind(this)} />
+                <div
+                    id={styles.taskHost}
+                    className={styles[this.state.state]}
+                    onAnimationEnd={this.onAnimationEnd.bind(this)}>
 
-                <task.component
-                    task={task.task}
-                    value={this.state.value ? parseInt(this.state.value, 10) : null}
-                    answer={task.getAnswer()}
-                    state={this.state.state} />
-                {this.state.state === "correct" ?
-                <button
-                    ref={e => this.nextButton = e}
-                    id={styles.nextButton}
-                    onClick={this.onNextTaskClick.bind(this)}>
-                    Neste oppgave
-                </button> : null}
-                <img id={styles.correctReaction} src={pickEmoticon(correctEmoticons)} />
-                <img id={styles.wrongReaction} src={pickEmoticon(wrongEmoticons)} />
-                <div id={styles.stats}>
-                    {`Rett: ${task.numCorrect} | Feil: ${task.numWrong}`}
+                    <task.component
+                        task={task.task}
+                        value={this.state.value ? parseInt(this.state.value, 10) : null}
+                        answer={task.getAnswer()}
+                        state={this.state.state} />
+                    {this.state.state === "correct" ?
+                    <button
+                        ref={e => this.nextButton = e}
+                        id={styles.nextButton}
+                        onClick={this.onNextTaskClick.bind(this)}>
+                        Neste oppgave
+                    </button> : null}
+                    <img id={styles.correctReaction} src={pickEmoticon(correctEmoticons)} />
+                    <img id={styles.wrongReaction} src={pickEmoticon(wrongEmoticons)} />
+                    <div id={styles.stats}>
+                        {`Rett: ${task.numCorrect} | Feil: ${task.numWrong}`}
+                    </div>
                 </div>
             </div>
         );
@@ -250,7 +256,12 @@ export default class TaskHost extends React.Component<{}, ITaskHostState> {
         if (!nextTask) {
             this.context.router.push("/summary");
         } else {
-            this.setState({ task: nextTask, state: "active", value: "" });
+            this.setState({
+                ...this.state,
+                task: nextTask,
+                state: "active",
+                value: ""
+            });
         }
     }
 
@@ -258,8 +269,9 @@ export default class TaskHost extends React.Component<{}, ITaskHostState> {
         if (!this.state.task) {
             throw new Error("onCorrect: No task state.");
         }
+        store.dispatch({ type: "increment-correct" });
         this.state.task.numCorrect++;
-        defer(() => this.nextButton.focus());
+        //defer(() => this.nextButton.focus());
     }
 
     onWrong() {
@@ -314,6 +326,12 @@ export default class TaskHost extends React.Component<{}, ITaskHostState> {
         }
     }
 
+    onOutOfTime() {
+        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        store.dispatch({ type: "stop" });
+        this.context.router.push("/summary");
+    }
+
     componentWillUnmount() {
         removeEventListener("keydown", this.keyListener);
     }
@@ -333,4 +351,60 @@ function getTask(): ITask | null {
         task = tasks[Math.round(Math.random() * tasks.length)];
     } while (!task || task.numCorrect >= correctLimit);
     return task;
+}
+
+//
+// Timer component.
+//
+
+interface ITimerProps {
+    duration: number;
+    onOutOfTime: () => void;
+}
+
+class Timer extends React.Component<ITimerProps, { duration: number; }> {
+
+    private interval: number;
+
+    constructor() {
+        super();
+        this.state = { duration: getDuration() }
+    }
+
+    componentWillMount() {
+        this.interval = window.setInterval(() => {
+            const duration = getDuration();
+            const timeLeft = this.getTimeLeft(duration);
+
+            this.setState({
+                ...this.state,
+                duration: duration
+            });
+
+            if (timeLeft === 0) {
+                clearInterval(this.interval);
+                this.props.onOutOfTime();
+            }
+
+        }, 1000);
+    }
+
+    getTimeLeft(duration: number) {
+        return Math.max(Math.round((this.props.duration - duration) / 1000), 0);
+    }
+
+    render() { return (
+        <div className={styles.clock}>
+            {this.getTimeLeft(this.state.duration)}
+        </div>);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+
+}
+
+function getDuration(): number {
+    return Date.now() - store.getState().startedAt!.valueOf();
 }

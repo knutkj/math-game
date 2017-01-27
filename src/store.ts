@@ -6,6 +6,7 @@ interface IState {
     readonly taskCollections: ReadonlyArray<ITaskCollection>;
     readonly selectedTaskCollections: ReadonlyArray<string>;
     startedAt: Date | null;
+    numberOfCorrectTasks: number;
 }
 
 export interface IAction {
@@ -14,14 +15,17 @@ export interface IAction {
         "task-collection-selected" |
         "task-collection-unselected" |
         "unselect-all-task-collections" |
-        "start";
+        "start" |
+        "stop" |
+        "increment-correct";
     value: any;
 }
 
 const defaultState: IState = {
     taskCollections: [],
     selectedTaskCollections: [],
-    startedAt: null
+    startedAt: null,
+    numberOfCorrectTasks: 0
 };
 
 function reducer(state: IState = defaultState, action: IAction) {
@@ -52,13 +56,26 @@ function reducer(state: IState = defaultState, action: IAction) {
         case "unselect-all-task-collections":
             return {
                 ...state,
-                selectedTaskCollections: []
+                selectedTaskCollections: [],
+                numberOfCorrectTasks: 0
             };
 
         case "start":
             return {
                 ...state,
                 startedAt: new Date()
+            };
+
+        case "stop":
+            return {
+                ...state,
+                startedAt: null
+            };
+
+        case "increment-correct":
+            return {
+                ...state,
+                numberOfCorrectTasks: state.numberOfCorrectTasks + 1
             };
 
     }

@@ -90,6 +90,14 @@ store.dispatch({
     }
 });
 
+store.dispatch({
+    type: "add-task-collection",
+    value: {
+        name: "Pluss 0-30",
+        tasks: createAdditionTasks(0, 30).map(t => new Addition(t))
+    }
+});
+
 export function createAdditionTasks(start: number, stop: number): string[] {
     if (start === stop) {
         return [`${start}+${stop}`];
