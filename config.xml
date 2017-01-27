@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<widget
+    xmlns="http://www.w3.org/ns/widgets"
+    xmlns:gap="http://phonegap.com/ns/1.0"
+    id="no.kkj.math"
+    version="0.0.1" >
+
+  <name>Math game</name>
+  <name xml:lang="no">Mattespill</name>
+
+  <description>
+      A math game for kids.
+  </description>
+  <description xml:lang="no">
+      Et mattespill for barn.
+  </description>
+
+  <author href="https://github.com/knutkj">
+      Knut Kristian Johansen
+  </author>
+
+</widget>

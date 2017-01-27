@@ -4,6 +4,13 @@ import store from "./store";
 
 const styles = require<any>("./TaskHost.less");
 
+//
+// Making all SVG files available.
+//
+const requireSvg = require.context("../images", true, /set[0-9]\/(correct|wrong)\/[^/]+\.svg$/);
+const correctEmoticons = requireSvg.keys().filter(k => /correct\/[^/]+$/.test(k));
+const wrongEmoticons = requireSvg.keys().filter(k => /wrong\/[^/]+$/.test(k));
+
 export type TaskState = "active" | "correct" | "wrong";
 
 export interface ITaskProps {
@@ -28,149 +35,7 @@ export interface ITaskCollection {
     readonly tasks: ITask[];
 }
 
-const correctEmoticons = ([] as string[]).concat(
-[
-    "angel.svg",
-    "cap.svg",
-    "clown.svg",
-    "cool.svg",
-    "eyeglass.svg",
-    "geek.svg",
-    "happy.svg",
-    "humor.svg",
-    "kiss.svg",
-    "laughing.svg",
-    "like.svg",
-    "love.svg",
-    "mustache.svg",
-    "punk.svg",
-    "robot.svg",
-    "smile.svg",
-    "star.svg",
-    "sunglass.svg",
-    "sunglass_2.svg",
-    "sunglass_3.svg",
-    "wink.svg"
-].map(i => `images/set1/correct/${i}`),
-[
-    "alien.svg",
-    "emoticon-1.svg",
-    "emoticon-2.svg",
-    "emoticon-3.svg",
-    "emoticon-4.svg",
-    "emoticon.svg",
-    "happy-1.svg",
-    "happy-2.svg",
-    "happy-3.svg",
-    "happy-4.svg",
-    "happy-5.svg",
-    "happy-6.svg",
-    "happy.svg",
-    "in-love-1.svg",
-    "in-love.svg",
-    "kiss.svg",
-    "laughing.svg",
-    "listening.svg",
-    "people-1.svg",
-    "people-2.svg",
-    "people.svg",
-    "signs.svg",
-    "smile.svg",
-    "wink.svg",
-    "winking.svg"
-].map(i => `images/set2/correct/${i}`),
-[
-    "1f31e.svg",
-    "1f339.svg",
-    "1f385.svg",
-    "1f386.svg",
-    "1f3f5.svg",
-    "1f406.svg",
-    "1f407.svg",
-    "1f40c.svg",
-    "1f41b.svg",
-    "1f41d.svg",
-    "1f41e.svg",
-    "1f42c.svg",
-    "1f431.svg",
-    "1f435.svg",
-    "1f439.svg",
-    "1f44d.svg",
-    "1f44f.svg",
-    "1f467.svg",
-    "1f47b.svg",
-    "1f47d.svg",
-    "1f48b.svg",
-    "1f60d.svg",
-    "1f638.svg",
-    "1f923.svg",
-    "1f981.svg",
-    "2603.svg",
-    "26c4.svg"
-].map(i => `images/set3/correct/${i}`));
-
-const wrongEmoticons = ([] as string[]).concat(
-[
-    "confused.svg",
-    "crying.svg",
-    "depression.svg",
-    "dislike.svg",
-    "sleepi.svg",
-    "smarth.svg",
-    "surprise.svg"
-].map(i => `images/set1/wrong/${i}`),
-[
-    "confused.svg",
-    "crying.svg",
-    "emoticon-1.svg",
-    "emoticon-10.svg",
-    "emoticon-11.svg",
-    "emoticon-12.svg",
-    "emoticon-13.svg",
-    "emoticon-14.svg",
-    "emoticon-15.svg",
-    "emoticon-16.svg",
-    "emoticon-2.svg",
-    "emoticon-3.svg",
-    "emoticon-4.svg",
-    "emoticon-5.svg",
-    "emoticon-6.svg",
-    "emoticon-7.svg",
-    "emoticon-8.svg",
-    "emoticon-9.svg",
-    "emoticon.svg",
-    "interface-1.svg",
-    "interface-2.svg",
-    "interface-3.svg",
-    "interface-4.svg",
-    "interface.svg",
-    "people-1.svg",
-    "people-2.svg",
-    "people-3.svg",
-    "people-4.svg",
-    "people-5.svg",
-    "people-6.svg",
-    "people-7.svg",
-    "people-8.svg",
-    "people-9.svg",
-    "people.svg",
-    "sad-1.svg",
-    "sad.svg",
-    "scared-1.svg",
-    "scared.svg",
-    "sceptic.svg",
-    "shocked.svg",
-    "sick.svg",
-    "silent.svg",
-    "smiley.svg",
-    "square-1.svg",
-    "square-2.svg",
-    "square.svg",
-    "thinking.svg",
-    "tired.svg"
-].map(i => `images/set2/wrong/${i}`));
-
-function pickEmoticon(emoticon) {
+function pickEmoticon(emoticon: string[]): string {
     const index = Math.round(Math.random() * emoticon.length - .5);
     return emoticon[index];
 }
@@ -233,8 +98,15 @@ export default class TaskHost extends React.Component<{}, ITaskHostState> {
                         onClick={this.onNextTaskClick.bind(this)}>
                         Neste oppgave
                     </button> : null}
-                    <img id={styles.correctReaction} src={pickEmoticon(correctEmoticons)} />
-                    <img id={styles.wrongReaction} src={pickEmoticon(wrongEmoticons)} />
+
+                    <img
+                        id={styles.correctReaction}
+                        src={requireSvg<string>(pickEmoticon(correctEmoticons))} />
+
+                    <img
+                        id={styles.wrongReaction}
+                        src={requireSvg<string>(pickEmoticon(wrongEmoticons))} />
+
                     <div id={styles.stats}>
                         {`Rett: ${task.numCorrect} | Feil: ${task.numWrong}`}
                     </div>
