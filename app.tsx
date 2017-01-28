@@ -5,6 +5,7 @@ import App from "./src/App";
 import TaskCollectionPicker from "./src/TaskCollectionPicker";
 import TaskHost from "./src/TaskHost";
 import Summary from "./src/Summary";
+import Settings from "./src/Settings";
 import { getNumberOfSelectedTaskCollections } from "./src/store";
 
 //
@@ -25,11 +26,14 @@ ReactDOM.render(
             <Route
                 onEnter={onEnterTasks}
                 onLeave={() => document.body.style.overflow = "visible"}
+
                 path="/tasks" component={TaskHost} />
             <Route
                 onEnter={(_, replace: ReactRouter.RedirectFunction) =>
                     getNumberOfSelectedTaskCollections() === 0 && replace("/")}
                 path="/summary" component={Summary} />
+
+            <Route path="/settings" component={Settings} />
         </Route>
     </Router>,
     appElement);

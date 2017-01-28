@@ -58,8 +58,11 @@ export default class TaskHost extends React.Component<{}, ITaskHostState> {
 
     constructor(props, context) {
         super(props, context);
-        store.dispatch({ type: "task-set", value: getTask() });
-        const currentTask = store.getState().currentTask;
+        let currentTask = store.getState().currentTask;
+        if (!currentTask) {
+            store.dispatch({ type: "task-set", value: getTask() });
+            currentTask = store.getState().currentTask;
+        }
         if (currentTask) {
             this.state = {
                 task: currentTask.task,

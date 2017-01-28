@@ -14,7 +14,6 @@ export default class TaskCollectionPicker
     extends React.Component<{}, ITaskCollectionPickerState>
     implements React.ComponentLifecycle<{}, ITaskCollectionPickerState> {
 
-    static contextTypes = { router: React.PropTypes.object.isRequired };
     unsubscribe: () => void;
 
     constructor() {

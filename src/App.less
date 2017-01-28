@@ -2,6 +2,7 @@
     font-family: chalk;
     src: url("fonts/Sensible_Schooling.otf") format("opentype");
 }
+
 html {
     font-size: 5vh;
 }
@@ -28,8 +29,23 @@ h1 {
     letter-spacing: 8px;
 }
 
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+.footer {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 10px;
+    text-align: right;
+    line-height: 20px;
+
+    [role=button] {
+        @buttonSize: 30px;
+        display: inline-block;
+        width: @buttonSize;
+        height: @buttonSize;
+        cursor: pointer;
+        
+        &:active {
+            transform: scale(.9);
+        }
+    }
 }

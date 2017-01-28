@@ -3,7 +3,7 @@ const { UglifyJsPlugin } = optimize;
 const prod = process.argv.indexOf('-p') !== -1;
 
 module.exports = {
-    entry: "./app.tsx",
+    entry: [ /*"modernizr",*/ "./app.tsx" ],
     output: {
         filename: "app.js"
     },
