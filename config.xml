@@ -3,7 +3,7 @@
     xmlns="http://www.w3.org/ns/widgets"
     xmlns:gap="http://phonegap.com/ns/1.0"
     id="no.kkj.math"
-    version="0.0.1" >
+    version="0.0.2" >
 
   <name>Math game</name>
   <name xml:lang="no">Mattespill</name>
