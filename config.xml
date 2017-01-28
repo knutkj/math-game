@@ -19,4 +19,6 @@
       Knut Kristian Johansen
   </author>
 
+  <plugin name="cordova-plugin-inappbrowser" spec="~1.6.1" />
+
 </widget>
