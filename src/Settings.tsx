@@ -10,7 +10,12 @@ export default class Settings extends React.Component<{}, {}> {
             <h1>{strings.settings}</h1>
             <ul>
                 <li>
-                    <a href="http://haz.io">{strings.testBrowser}</a>
+                    <a
+                        target="_blank"
+                        data-rel="external"
+                        href="http://haz.io">
+                        {strings.testBrowser}
+                    </a>
                 </li>
             </ul>
         </div>);
