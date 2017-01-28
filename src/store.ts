@@ -2,30 +2,46 @@ import { indexBy, flatten } from "underscore";
 import { createStore } from "redux";
 import { ITaskCollection, ITask } from "./TaskHost";
 
+export type TaskState = "active" | "correct" | "wrong";
+
 interface IState {
     readonly taskCollections: ReadonlyArray<ITaskCollection>;
     readonly selectedTaskCollections: ReadonlyArray<string>;
-    startedAt: Date | null;
-    numberOfCorrectTasks: number;
+    readonly startedAt: Date | null;
+    readonly numberOfCorrectTasks: number;
+    readonly numberOfWrongAnswers: number;
+
+    readonly currentTask: {
+        readonly state: "active" | "correct" | "wrong";
+        readonly startedAt: Date;
+        readonly task: ITask | null;
+        readonly suggestedAnswer: number | null;
+    } | null;
+
 }
 
+// const state = this.state.task.getState(value);
+
 export interface IAction {
-    type:
+    readonly type:
         "add-task-collection" |
         "task-collection-selected" |
         "task-collection-unselected" |
         "unselect-all-task-collections" |
         "start" |
+        "task-set" |
         "stop" |
-        "increment-correct";
-    value: any;
+        "answer-suggested";
+    readonly value: any;
 }
 
 const defaultState: IState = {
     taskCollections: [],
     selectedTaskCollections: [],
     startedAt: null,
-    numberOfCorrectTasks: 0
+    numberOfCorrectTasks: 0,
+    numberOfWrongAnswers: 0,
+    currentTask: null
 };
 
 function reducer(state: IState = defaultState, action: IAction) {
@@ -66,19 +82,53 @@ function reducer(state: IState = defaultState, action: IAction) {
                 startedAt: new Date()
             };
 
+        case "task-set":
+            return action.value ?
+                {
+                    ...state,
+                    currentTask: {
+                        state: "active",
+                        startedAt: new Date(),
+                        task: action.value,
+                        suggestedAnswer: null
+                    }
+                } as IState :
+
+                { ...state, currentTask: null } as IState;
+
         case "stop":
             return {
                 ...state,
                 startedAt: null
             };
 
-        case "increment-correct":
+        case "answer-suggested": {
+            if (!state.currentTask) {
+                throw new Error("No current task while answer suggested.");
+            }
+
+            if (!state.currentTask.task) {
+                throw new Error("No task while answer suggested.");
+            }
+
+            const taskState = state.currentTask.task.getState(action.value);
+
             return {
                 ...state,
-                numberOfCorrectTasks: state.numberOfCorrectTasks + 1
-            };
+                numberOfCorrectTasks: taskState === "correct" ?
+                    state.numberOfCorrectTasks : state.numberOfCorrectTasks + 1,
+                numberOfWrongAnswers: taskState === "wrong" ?
+                    state.numberOfWrongAnswers : state.numberOfWrongAnswers - 1,
+                currentTask: {
+                    ...state.currentTask,
+                    state: taskState,
+                    suggestedAnswer: action.value
+                }
+            } as IState;
+        }
 
     }
+
     return state;
 }
 

@@ -1,9 +1,9 @@
 import * as React from "react";
-import { ITask, TaskState } from "./TaskHost";
+import { ITask } from "./TaskHost";
 import { flatten, range } from "underscore";
-import store from "./store";
+import store, { TaskState } from "./store";
 
-const styles = require<any>("./AdditionTask.css");
+const styles = require<any>("./AdditionTask.less");
 
 interface IAdditionTaskProps {
     task: string;
@@ -18,7 +18,7 @@ class AdditionTask
     render() {
         return (
             <form className={styles.additionTask}>
-                <div className={styles.text}>
+                <div className={styles.text} style={{ fontSize: "20vw" }}>
                     {this.props.task}={this.props.value}
                 </div>
             </form>

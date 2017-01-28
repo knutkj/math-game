@@ -1,6 +1,7 @@
 import * as React from "react";
 import { getSelectedTasks } from "./store";
-import store from "./store";
+import store, { TaskState } from "./store";
+import Numpad from "./Numpad";
 
 const styles = require<any>("./TaskHost.less");
 
@@ -10,8 +11,6 @@ const styles = require<any>("./TaskHost.less");
 const requireSvg = require.context("../images", true, /set[0-9]\/(correct|wrong)\/[^/]+\.svg$/);
 const correctEmoticons = requireSvg.keys().filter(k => /correct\/[^/]+$/.test(k));
 const wrongEmoticons = requireSvg.keys().filter(k => /wrong\/[^/]+$/.test(k));
-
-export type TaskState = "active" | "correct" | "wrong";
 
 export interface ITaskProps {
     readonly task: string;
@@ -43,7 +42,7 @@ function pickEmoticon(emoticon: string[]): string {
 interface ITaskHostState {
     readonly task: ITask | null;
     readonly state: TaskState;
-    readonly value: string;
+    readonly value: number | null;
     readonly duration: number;
 }
 
@@ -54,19 +53,44 @@ export default class TaskHost extends React.Component<{}, ITaskHostState> {
 
     static contextTypes = { router: React.PropTypes.object.isRequired };
 
-    private nextButton: HTMLButtonElement;
     private keyListener: (e: KeyboardEvent) => void;
+    private unsubscribe: () => void;
 
     constructor(props, context) {
         super(props, context);
-        this.state = {
-            task: getTask(),
-            state: "active",
-            value: "",
-            duration: getDuration()
-        };
+        store.dispatch({ type: "task-set", value: getTask() });
+        const currentTask = store.getState().currentTask;
+        if (currentTask) {
+            this.state = {
+                task: currentTask.task,
+                state: currentTask.state,
+                value: currentTask.suggestedAnswer,
+                duration: getDuration()
+            };
+        } else {
+            this.state = {
+                task: null,
+                state: "active",
+                value: null,
+                duration: getDuration()
+            };
+        }
         this.keyListener = this.onKeyDown.bind(this);
         addEventListener("keydown", this.keyListener);
+    }
+
+    componentWillMount() {
+        this.unsubscribe = store.subscribe(() => {
+            const currentTask = store.getState().currentTask;
+            if (currentTask) {
+                this.setState({
+                    state: currentTask.state,
+                    task: currentTask.task,
+                    value: currentTask.suggestedAnswer,
+                    duration: getDuration(),
+                });
+            }
+        });
     }
 
     render() {
@@ -81,6 +105,7 @@ export default class TaskHost extends React.Component<{}, ITaskHostState> {
                 <Timer
                     duration={300 * 1000}
                     onOutOfTime={this.onOutOfTime.bind(this)} />
+
                 <div
                     id={styles.taskHost}
                     className={styles[this.state.state]}
@@ -88,16 +113,9 @@ export default class TaskHost extends React.Component<{}, ITaskHostState> {
 
                     <task.component
                         task={task.task}
-                        value={this.state.value ? parseInt(this.state.value, 10) : null}
+                        value={this.state.value}
                         answer={task.getAnswer()}
                         state={this.state.state} />
-                    {this.state.state === "correct" ?
-                    <button
-                        ref={e => this.nextButton = e}
-                        id={styles.nextButton}
-                        onClick={this.onNextTaskClick.bind(this)}>
-                        Neste oppgave
-                    </button> : null}
 
                     <img
                         id={styles.correctReaction}
@@ -107,10 +125,10 @@ export default class TaskHost extends React.Component<{}, ITaskHostState> {
                         id={styles.wrongReaction}
                         src={requireSvg<string>(pickEmoticon(wrongEmoticons))} />
 
-                    <div id={styles.stats}>
-                        {`Rett: ${task.numCorrect} | Feil: ${task.numWrong}`}
-                    </div>
                 </div>
+
+                <Numpad />
+
             </div>
         );
     }
@@ -125,71 +143,41 @@ export default class TaskHost extends React.Component<{}, ITaskHostState> {
 
     onNextTaskClick() {
         const nextTask = getTask();
+        store.dispatch({ type: "task-set", value: nextTask });
         if (!nextTask) {
             this.context.router.push("/summary");
-        } else {
-            this.setState({
-                ...this.state,
-                task: nextTask,
-                state: "active",
-                value: ""
-            });
         }
-    }
-
-    onCorrect() {
-        if (!this.state.task) {
-            throw new Error("onCorrect: No task state.");
-        }
-        store.dispatch({ type: "increment-correct" });
-        this.state.task.numCorrect++;
-        //defer(() => this.nextButton.focus());
-    }
-
-    onWrong() {
-        if (!this.state.task) {
-            throw new Error("onWrong: No task state.");
-        }
-        this.state.task.numWrong++;
     }
 
     onKeyDown(e: KeyboardEvent) {
         if (!this.state.task) {
             return;
         }
-        let value: string = this.state.value;
-        if (/^[0-9]$/.test(e.key)) {
-            if (this.state.state === "active") {
-                value = `${this.state.value}${e.key}`;
-            } else {
-                return;
-            }
 
+        const stringValue = this.state.value === null ?
+            "" : `${this.state.value}`;
+
+        //
+        // If a number character has been pressed.
+        //
+        if (/^[0-9]$/.test(e.key) && this.state.state === "active") {
+            const value = parseInt(`${stringValue}${e.key}`, 10);
+            store.dispatch({ type: "answer-suggested", value });
+
+        //
+        // If the backspace character has been pressed.
+        //
         } else if (/^Backspace$/i.test(e.key)) {
-            if (this.state.state === "correct") {
+            if (this.state.state === "correct" || stringValue.length === 0) {
                 return;
             }
-            value = this.state.value.substr(0, this.state.value.length - 1);
+            const valueLength = stringValue.length;
+            const value = valueLength === 1 ?
+                null :
+                parseInt(stringValue.substr(0, valueLength - 1), 10);
 
-        } else if (/^ |Enter$/i.test(e.key)) {
-            if (this.state.state === "correct") {
-                this.onNextTaskClick();
-            }
-            return;
-
-        } else {
-            return;
+            store.dispatch({ type: "answer-suggested", value });
         }
-        const state = this.state.task.getState(parseInt(value, 0));
-        switch (state) {
-            case "correct":
-                this.onCorrect();
-                break;
-            case "wrong":
-                this.onWrong();
-                break;
-        }
-        this.setState({ ...this.state, value, state });
     }
 
     onAnimationEnd() {
@@ -199,12 +187,12 @@ export default class TaskHost extends React.Component<{}, ITaskHostState> {
     }
 
     onOutOfTime() {
-        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         store.dispatch({ type: "stop" });
         this.context.router.push("/summary");
     }
 
     componentWillUnmount() {
+        this.unsubscribe();
         removeEventListener("keydown", this.keyListener);
     }
 }

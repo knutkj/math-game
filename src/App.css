@@ -3,7 +3,7 @@
     src: url("fonts/Sensible_Schooling.otf") format("opentype");
 }
 html {
-    font-size: 50px;
+    font-size: 5vh;
 }
 
 html, body {

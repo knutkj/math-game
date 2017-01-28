@@ -1,7 +1,7 @@
 import { range } from "underscore";
 import * as React from "react";
-import { TaskState, ITask } from "./TaskHost";
-import store from "./store";
+import { ITask } from "./TaskHost";
+import store, { TaskState } from "./store";
 
 const styles = require<any>("./SubtractionTask.css");
 
@@ -12,15 +12,13 @@ interface ISubtractionTaskProps {
     answer: number;
 }
 
-//interface ISubtractionTask extends ITask<ISubtractionTaskProps> {}
-
 class SubtractionTask
     extends React.Component<ISubtractionTaskProps, {}> {
 
     render() {
         return (
             <form className={styles.subtractionTask}>
-                <div className={styles.text}>
+                <div className={styles.text} style={{ fontSize: "20vw" }}>
                     {this.props.task}={this.props.value}
                 </div>
                 {this.props.state === "wrong" ?
