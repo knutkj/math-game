@@ -3,6 +3,7 @@ import { createStore } from "redux";
 import { ITaskCollection, ITask } from "./TaskHost";
 
 export type TaskState = "active" | "correct" | "wrong";
+export type KeyBoardType = "numpad" | "two-level-numpad";
 
 interface IState {
     readonly deviceReady: boolean;
@@ -12,12 +13,17 @@ interface IState {
     readonly numberOfCorrectTasks: number;
     readonly numberOfWrongAnswers: number;
 
-    readonly currentTask: {
+    readonly currentTask: null | {
         readonly state: "active" | "correct" | "wrong";
         readonly startedAt: Date;
         readonly task: ITask | null;
         readonly suggestedAnswer: number | null;
-    } | null;
+    };
+
+    readonly currentKeyboard: null | {
+        name: KeyBoardType;
+        props?: any;
+    };
 
 }
 
@@ -29,6 +35,7 @@ export interface IAction {
         "task-collection-unselected" |
         "start" |
         "task-set" |
+        "set-keyboard" |
         "stop" |
         "answer-suggested" |
         "restart";
@@ -42,7 +49,8 @@ const defaultState: IState = {
     startedAt: null,
     numberOfCorrectTasks: 0,
     numberOfWrongAnswers: 0,
-    currentTask: null
+    currentTask: null,
+    currentKeyboard: null
 };
 
 function reducer(state: IState = defaultState, action: IAction) {
@@ -94,6 +102,9 @@ function reducer(state: IState = defaultState, action: IAction) {
 
                 { ...state, currentTask: null } as IState;
 
+        case "set-keyboard":
+            return { ...state, currentKeyboard: action.value };
+
         case "stop":
             return {
                 ...state,
@@ -142,10 +153,19 @@ function reducer(state: IState = defaultState, action: IAction) {
 const store = createStore<IState>(reducer);
 export default store;
 
-export function getSelectedTasks(): ReadonlyArray<ITask> {
+export interface ITaskWrapper {
+    collection: ITaskCollection;
+    task: ITask;
+}
+
+export function getSelectedTasks(): ReadonlyArray<ITaskWrapper> {
     const index = indexBy(store.getState().taskCollections, c => c.name);
     const selected = store.getState().selectedTaskCollections;
-    return flatten(selected.map(c => index[c]).map(c => c.tasks));
+    const taskWrappers = selected
+        .map(c => index[c])
+        .map(collection =>
+            collection.tasks.map(task => ({ collection, task })));
+    return flatten(taskWrappers);
 }
 
 export function getNumberOfSelectedTaskCollections() {

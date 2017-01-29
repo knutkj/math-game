@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ITask } from "./TaskHost";
+import { ITask, ITaskCollection } from "./TaskHost";
 import { flatten, range } from "underscore";
 import store, { TaskState } from "./store";
 
@@ -68,32 +68,36 @@ store.dispatch({
     type: "add-task-collection",
     value: {
         name: "Den lille addisjonstabellen",
-        tasks: createAdditionTasks(0, 10).map(t => new Addition(t))
-    }
+        tasks: createAdditionTasks(0, 10).map(t => new Addition(t)),
+        keyboard: { name: "numpad" } 
+    } as ITaskCollection
 });
 
 store.dispatch({
     type: "add-task-collection",
     value: {
         name: "Pluss 10-20",
-        tasks: createAdditionTasks(10, 20).map(t => new Addition(t))
-    }
+        tasks: createAdditionTasks(10, 20).map(t => new Addition(t)),
+        keyboard: { name: "two-level-numpad" } 
+    } as ITaskCollection
 });
 
 store.dispatch({
     type: "add-task-collection",
     value: {
         name: "Pluss 0-20",
-        tasks: createAdditionTasks(0, 20).map(t => new Addition(t))
-    }
+        tasks: createAdditionTasks(0, 20).map(t => new Addition(t)),
+        keyboard: { name: "two-level-numpad" } 
+    } as ITaskCollection
 });
 
 store.dispatch({
     type: "add-task-collection",
     value: {
         name: "Pluss 0-30",
-        tasks: createAdditionTasks(0, 30).map(t => new Addition(t))
-    }
+        tasks: createAdditionTasks(0, 30).map(t => new Addition(t)),
+        keyboard: { name: "two-level-numpad" } 
+    } as ITaskCollection
 });
 
 export function createAdditionTasks(start: number, stop: number): string[] {

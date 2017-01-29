@@ -13,7 +13,7 @@ import store from "./src/store";
 // Importing tasks.
 //
 import "./src/AdditionTask.tsx";
-import "./src/SubtractionTask.tsx";
+//import "./src/SubtractionTask.tsx";
 
 const appElement = document.querySelector("#app");
 if (!appElement) {

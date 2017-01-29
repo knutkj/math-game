@@ -1,7 +1,8 @@
 import * as React from "react";
 import { getSelectedTasks } from "./store";
-import store, { TaskState } from "./store";
+import store, { TaskState, ITaskWrapper, KeyBoardType } from "./store";
 import Numpad from "./Numpad";
+import TwoLevelNumpad from "./TwoLevelNumpad";
 
 const styles = require<any>("./TaskHost.less");
 
@@ -32,6 +33,10 @@ export interface ITask {
 export interface ITaskCollection {
     readonly name: string;
     readonly tasks: ITask[];
+    readonly keyboard: {
+        name: KeyBoardType,
+        props?: any
+    };
 }
 
 function pickEmoticon(emoticon: string[]): string {
@@ -44,6 +49,7 @@ interface ITaskHostState {
     readonly state: TaskState;
     readonly value: number | null;
     readonly duration: number;
+    readonly keyboard: KeyBoardType | null;
 }
 
 /**
@@ -60,22 +66,27 @@ export default class TaskHost extends React.Component<{}, ITaskHostState> {
         super(props, context);
         let currentTask = store.getState().currentTask;
         if (!currentTask) {
-            store.dispatch({ type: "task-set", value: getTask() });
+            setTask();
             currentTask = store.getState().currentTask;
         }
+        const currentKeyboard = store.getState().currentKeyboard;
+        const keyboard = currentKeyboard ? currentKeyboard.name : null;
         if (currentTask) {
             this.state = {
                 task: currentTask.task,
                 state: currentTask.state,
                 value: currentTask.suggestedAnswer,
-                duration: getDuration()
+                duration: getDuration(),
+                keyboard
+
             };
         } else {
             this.state = {
                 task: null,
                 state: "active",
                 value: null,
-                duration: getDuration()
+                duration: getDuration(),
+                keyboard
             };
         }
         this.keyListener = this.onKeyDown.bind(this);
@@ -85,12 +96,15 @@ export default class TaskHost extends React.Component<{}, ITaskHostState> {
     componentWillMount() {
         this.unsubscribe = store.subscribe(() => {
             const currentTask = store.getState().currentTask;
+            const currentKeyboard = store.getState().currentKeyboard;
+            const keyboard = currentKeyboard ? currentKeyboard.name : null;
             if (currentTask) {
                 this.setState({
                     state: currentTask.state,
                     task: currentTask.task,
                     value: currentTask.suggestedAnswer,
                     duration: getDuration(),
+                    keyboard
                 });
             }
         });
@@ -129,7 +143,9 @@ export default class TaskHost extends React.Component<{}, ITaskHostState> {
                     id={styles.wrongReaction}
                     src={requireSvg<string>(pickEmoticon(wrongEmoticons))} />
 
-                <Numpad />
+                {this.state.keyboard ? (this.state.keyboard === "numpad" ?
+                <Numpad /> :
+                <TwoLevelNumpad />) : null}
 
             </div>
         );
@@ -144,9 +160,8 @@ export default class TaskHost extends React.Component<{}, ITaskHostState> {
     }
 
     onNextTaskClick() {
-        const nextTask = getTask();
-        store.dispatch({ type: "task-set", value: nextTask });
-        if (!nextTask) {
+        setTask();
+        if (!store.getState().currentTask) {
             this.context.router.push("/summary");
         }
     }
@@ -199,20 +214,22 @@ export default class TaskHost extends React.Component<{}, ITaskHostState> {
     }
 }
 
-function getTask(): ITask | null {
-    var task: ITask,
+function setTask(): void {
+    var task: ITaskWrapper,
         correctLimit = 3;
     const tasks = getSelectedTasks();
-    var tasksLeft = tasks.some(function (t) {
+    var tasksLeft = tasks.map(w => w.task).some(function (t) {
         return t.numCorrect < correctLimit;
     });
     if (!tasksLeft) {
-        return null;
+        store.dispatch({ type: "task-set", value: null });
+        store.dispatch({ type: "set-keyboard", value: null });
     }
     do {
         task = tasks[Math.round(Math.random() * tasks.length)];
-    } while (!task || task.numCorrect >= correctLimit);
-    return task;
+    } while (!task || task.task.numCorrect >= correctLimit);
+    store.dispatch({ type: "task-set", value: task.task });
+    store.dispatch({ type: "set-keyboard", value: task.collection.keyboard });
 }
 
 //
