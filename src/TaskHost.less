@@ -1,7 +1,7 @@
-@fontSize:                 8rem;
-@emoticonSize:             8rem;
-@correctAnimationDuration:  .3s;
-@correctAnimationDelay:     .5s;
+@correctEmojiSize:         60vmin;
+@wrongEmojiSize:           25vmin;
+@correctAnimationDuration:    .3s;
+@correctAnimationDelay:       .5s;
 
 //
 // Task host.
@@ -79,9 +79,9 @@
 #correctReaction {
     opacity: 1;
     position: absolute;
-    width: @emoticonSize;
-    height: @emoticonSize;
-    top: -@emoticonSize / 2;
+    width: @correctEmojiSize;
+    height: @correctEmojiSize;
+    top: -@correctEmojiSize / 2;
     left: 50%;
     transform: translate(-50%, -50%);
     transition: opacity 0;
@@ -98,7 +98,7 @@
 
 @keyframes correctEmoji {
     from {
-        top: -@emoticonSize;
+        top: -@correctEmojiSize / 2;
     }
     to {
         top: 50%;
@@ -111,17 +111,17 @@
 
 #wrongReaction {
     position: absolute;
-    width: 4rem;
-    height: 4rem;
-    bottom: 0;
+    width: @wrongEmojiSize;
+    height: @wrongEmojiSize;
+    bottom: -@wrongEmojiSize;
     left: 50%;
-    transform: translate(-2rem, 4rem);
+    transform: translate(-@wrongEmojiSize / 2, 0);
     transition: transform 0s;
 }
 
 .wrong {
     #wrongReaction {
-        transform: translate(-2rem, -1rem);
+        transform: translate(-@wrongEmojiSize / 2, -@wrongEmojiSize - 5vh);
         transition: transform .3s;
     }
 }
@@ -158,4 +158,3 @@
     bottom: 10px;
     display: none;
 }
-
