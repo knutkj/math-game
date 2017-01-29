@@ -2,7 +2,7 @@
 
 import { createSubtractionStrings } from "./SubtractionTask";
 
-describe("AdditionTask", () => {
+describe("SubtractionTask", () => {
 
     describe("createSubtractionStrings", () => {
 
@@ -18,7 +18,7 @@ describe("AdditionTask", () => {
 
         it("works for 0/2", () => {
             const tasks = createSubtractionStrings(0, 2);
-            expect(tasks).toEqual(["0+0", "1-0", "1-1", "2-0", "2-1", "2-2"]);
+            expect(tasks).toEqual(["0-0", "1-0", "1-1", "2-0", "2-1", "2-2"]);
         });
 
         it("works for 10/20", () => {

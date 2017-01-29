@@ -1,4 +1,4 @@
-import { range } from "underscore";
+import { range, flatten } from "underscore";
 import * as React from "react";
 import { ITask } from "./TaskHost";
 import store, { TaskState } from "./store";
@@ -115,13 +115,10 @@ store.dispatch({
 });
 
 export function createSubtractionStrings(start: number, stop: number) {
-    const strings: string[] = [];
-    for (let i = start; i <= stop; i++) {
-        strings.push.apply(
-            strings,
-            range(0, stop)
-                .filter(n => n <= i)
-                .map(n => `${i}-${n}`));
+    if (start === stop) {
+        return [`${start}-${stop}`];
     }
-    return strings;
+    return flatten(range(start, stop + 1)
+        .map(n => range(0, n + 1)
+            .map(k => `${n}-${k}`)));
 }
