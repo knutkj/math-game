@@ -5,7 +5,7 @@
   "description": "",
   "main": "subtraction.js",
   "scripts": {
-    "test": "tsc --outdir spec --module commonjs & jasmine",
+    "test": "karma start --single-run",
     "develop-app": "webpack -w --output-filename=./www/app.js",
     "build-app": "webpack -p --output-filename=./www/app.js"
   },
