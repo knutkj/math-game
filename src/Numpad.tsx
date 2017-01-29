@@ -8,7 +8,7 @@ export default class Numpad extends React.Component<{}, {}> {
 
     render() { return (
         <ul className={styles.numpad}>
-            {range(1, 11).map(n =>
+            {getKeys().map(n =>
             <li key={n}>
                 <div role="button" onClick={() => this.onClick(n)}>
                     {n}
@@ -21,4 +21,8 @@ export default class Numpad extends React.Component<{}, {}> {
         store.dispatch({ type: "answer-suggested", value: n });
     }
 
+}
+
+export function getKeys() {
+    return range(0, 11);
 }
