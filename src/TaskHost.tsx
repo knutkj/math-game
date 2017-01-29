@@ -104,31 +104,30 @@ export default class TaskHost extends React.Component<{}, ITaskHostState> {
 
     renderTask(task: ITask) {
         return (
-            <div>
+            <div
+                id={styles.taskHost}
+                className={styles[this.state.state]}
+                onAnimationEnd={this.onAnimationEnd.bind(this)}>
+
                 <Timer
                     duration={300 * 1000}
                     onOutOfTime={this.onOutOfTime.bind(this)} />
 
-                <div
-                    id={styles.taskHost}
-                    className={styles[this.state.state]}
-                    onAnimationEnd={this.onAnimationEnd.bind(this)}>
-
+                <div id={styles.taskContainer}>
                     <task.component
                         task={task.task}
                         value={this.state.value}
                         answer={task.getAnswer()}
                         state={this.state.state} />
-
-                    <img
-                        id={styles.correctReaction}
-                        src={requireSvg<string>(pickEmoticon(correctEmoticons))} />
-
-                    <img
-                        id={styles.wrongReaction}
-                        src={requireSvg<string>(pickEmoticon(wrongEmoticons))} />
-
                 </div>
+
+                <img
+                    id={styles.correctReaction}
+                    src={requireSvg<string>(pickEmoticon(correctEmoticons))} />
+
+                <img
+                    id={styles.wrongReaction}
+                    src={requireSvg<string>(pickEmoticon(wrongEmoticons))} />
 
                 <Numpad />
 
@@ -190,7 +189,7 @@ export default class TaskHost extends React.Component<{}, ITaskHostState> {
     }
 
     onOutOfTime() {
-        store.dispatch({ type: "stop" });
+        //store.dispatch({ type: "stop" });
         this.context.router.push("/summary");
     }
 
@@ -257,7 +256,7 @@ class Timer extends React.Component<ITimerProps, { duration: number; }> {
     }
 
     render() { return (
-        <div className={styles.clock}>
+        <div className={styles.timer}>
             {this.getTimeLeft(this.state.duration)}
         </div>);
     }

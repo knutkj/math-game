@@ -1,3 +1,5 @@
 /node_modules
 /spec
 /app.js
+/plugins
+/platforms

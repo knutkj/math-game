@@ -6,7 +6,8 @@
   "main": "subtraction.js",
   "scripts": {
     "test": "tsc --outdir spec --module commonjs & jasmine",
-    "production": "webpack -p --output-filename=./www/app.js"
+    "develop-app": "webpack -w --output-filename=./www/app.js",
+    "build-app": "webpack -p --output-filename=./www/app.js"
   },
   "author": "",
   "license": "ISC",
@@ -18,10 +19,12 @@
     "@types/react-dom": "^0.14.20",
     "@types/react-router": "^2.0.45",
     "@types/underscore": "^1.7.36",
+    "autoprefixer": "^6.7.0",
     "css-loader": "^0.24.0",
     "jasmine": "^2.5.3",
     "less": "^2.7.2",
     "less-loader": "^2.2.3",
+    "postcss-loader": "^1.2.2",
     "style-loader": "^0.13.1",
     "svg-url-loader": "^1.1.1",
     "ts-loader": "^0.8.2",

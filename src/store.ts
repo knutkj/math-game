@@ -5,6 +5,7 @@ import { ITaskCollection, ITask } from "./TaskHost";
 export type TaskState = "active" | "correct" | "wrong";
 
 interface IState {
+    readonly deviceReady: boolean;
     readonly taskCollections: ReadonlyArray<ITaskCollection>;
     readonly selectedTaskCollections: ReadonlyArray<string>;
     readonly startedAt: Date | null;
@@ -20,22 +21,22 @@ interface IState {
 
 }
 
-// const state = this.state.task.getState(value);
-
 export interface IAction {
     readonly type:
+        "device-ready" |
         "add-task-collection" |
         "task-collection-selected" |
         "task-collection-unselected" |
-        "unselect-all-task-collections" |
         "start" |
         "task-set" |
         "stop" |
-        "answer-suggested";
+        "answer-suggested" |
+        "restart";
     readonly value: any;
 }
 
 const defaultState: IState = {
+    deviceReady: false,
     taskCollections: [],
     selectedTaskCollections: [],
     startedAt: null,
@@ -46,6 +47,10 @@ const defaultState: IState = {
 
 function reducer(state: IState = defaultState, action: IAction) {
     switch (action.type) {
+
+        case "device-ready": {
+            return { ...state, deviceReady: true };
+        }
 
         case "add-task-collection":
             return {
@@ -67,13 +72,6 @@ function reducer(state: IState = defaultState, action: IAction) {
                 selectedTaskCollections:
                     state.selectedTaskCollections
                         .filter(c => c !== action.value)
-            };
-
-        case "unselect-all-task-collections":
-            return {
-                ...state,
-                selectedTaskCollections: [],
-                numberOfCorrectTasks: 0
             };
 
         case "start":
@@ -116,9 +114,9 @@ function reducer(state: IState = defaultState, action: IAction) {
             return {
                 ...state,
                 numberOfCorrectTasks: taskState === "correct" ?
-                    state.numberOfCorrectTasks : state.numberOfCorrectTasks + 1,
+                    state.numberOfCorrectTasks + 1 : state.numberOfCorrectTasks,
                 numberOfWrongAnswers: taskState === "wrong" ?
-                    state.numberOfWrongAnswers : state.numberOfWrongAnswers - 1,
+                    state.numberOfWrongAnswers - 1 : state.numberOfWrongAnswers,
                 currentTask: {
                     ...state.currentTask,
                     state: taskState,
@@ -126,6 +124,15 @@ function reducer(state: IState = defaultState, action: IAction) {
                 }
             } as IState;
         }
+
+        case "restart":
+            return {
+                ...state,
+                startedAt: null,
+                selectedTaskCollections: [],
+                numberOfCorrectTasks: 0,
+                currentTask: null
+            };
 
     }
 
@@ -143,4 +150,8 @@ export function getSelectedTasks(): ReadonlyArray<ITask> {
 
 export function getNumberOfSelectedTaskCollections() {
     return store.getState().selectedTaskCollections.length;
+}
+
+export function isDeviceReady() {
+    return store.getState().deviceReady;
 }

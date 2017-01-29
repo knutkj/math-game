@@ -1,16 +1,50 @@
-/// <reference types="cordova-plugin-inappbrowser" /> 
+/// <reference types="cordova" />
+/// <reference types="cordova-plugin-inappbrowser" />
+
+declare global {
+    interface Cordova {
+        InAppBrowser: InAppBrowser;
+    }
+}
 
 import * as React from "react";
 import strings from "./strings";
+import store, { isDeviceReady } from "./store";
 
 const pageStyles = require<any>("./Page.less");
 
-export default class Settings extends React.Component<{}, {}> {
+interface ISettinsState {
+    readonly deviceReady: boolean;
+}
+
+export default class Settings extends React.Component<{}, ISettinsState> {
+
+    unsubscribe: () => void;
+
+    componentWillMount() {
+        this.setState(this.getState());
+        this.unsubscribe = store.subscribe(this.setState.bind(this));
+    }
+
+    getState() {
+        return {
+            ...this.state || {},
+            deviceReady: store.getState().deviceReady
+        };
+    }
 
     render() { return (
         <div className={pageStyles.page}>
             <h1>{strings.settings}</h1>
             <ul>
+                {window.cordova ?
+                <li>
+                    {formatString(strings.cordovaVersion, cordova.version)}
+                </li> : null}
+                {window.cordova ?
+                <li>
+                    {formatString(strings.deviceReady, isDeviceReady())}
+                </li> : null}
                 <li>
                     <a
                         target="_blank"
@@ -25,11 +59,28 @@ export default class Settings extends React.Component<{}, {}> {
     }
 
     onTestBrowser(e: React.MouseEvent<HTMLAnchorElement>) {
-        if (window.cordova && cordova["InAppBrowser"]) {
+        if (store.getState().deviceReady) {
             e.preventDefault();
-            const inAppBrowser: InAppBrowser = cordova["InAppBrowser"];
-            inAppBrowser.open(e.currentTarget.href, "_blank", "location=yes");
+            cordova.InAppBrowser.open(
+                e.currentTarget.href, "_blank", "location=yes");
         }
     }
 
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
+
+}
+
+function formatString (template: string, ...args: any[]): string {
+    return args.reduce(
+        (prev, value, i) => prev.replace(`{${i}}`, getValue(value)),
+        template);
+}
+
+function getValue (value: string | boolean): string {
+    if (typeof value === "boolean") {
+        return strings[value ? "yes" : "no"];
+    }
+    return value;
 }

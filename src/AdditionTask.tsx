@@ -17,11 +17,9 @@ class AdditionTask
 
     render() {
         return (
-            <form className={styles.additionTask}>
-                <div className={styles.text} style={{ fontSize: "20vw" }}>
-                    {this.props.task}={this.props.value}
-                </div>
-            </form>
+            <div className={styles.text} style={{ fontSize: "20vw" }}>
+                {this.props.task}={this.props.value}
+            </div>
         );
     }
 }

@@ -23,6 +23,6 @@ export default class Summary extends React.Component<{}, {}> {
     }
 
     onRestart() {
-        store.dispatch({ type: "unselect-all-task-collections" });
+        store.dispatch({ type: "restart" });
     }
 }

@@ -13,8 +13,8 @@ module.exports = {
     module: {
         loaders: [
             { test: /\.tsx?$/i, loader: "ts" },
-            { test: /\.css$/i,  loader: "style!css?-url&modules&localIdentName=[name]-[local]" },
-            { test: /\.less$/i,  loader: "style!css?-url&modules&localIdentName=[name]-[local]!less" },
+            { test: /\.css$/i,  loader: "style!css?-url&modules&localIdentName=[name]-[local]!postcss" },
+            { test: /\.less$/i,  loader: "style!css?-url&modules&localIdentName=[name]-[local]!postcss!less" },
             { test: /\.svg$/i,  loader: "svg-url?noquotes" }
         ]
     },

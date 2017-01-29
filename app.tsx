@@ -7,6 +7,7 @@ import TaskHost from "./src/TaskHost";
 import Summary from "./src/Summary";
 import Settings from "./src/Settings";
 import { getNumberOfSelectedTaskCollections } from "./src/store";
+import store from "./src/store";
 
 //
 // Importing tasks.
@@ -16,8 +17,17 @@ import "./src/SubtractionTask.tsx";
 
 const appElement = document.querySelector("#app");
 if (!appElement) {
+    document.write("Missing task element.");
     throw new Error("Missing task element.");
 }
+
+//
+// Signals that Cordova's device APIs have loaded and are ready to access.
+//
+document.addEventListener(
+    "deviceready",
+    () => store.dispatch({ type: "device-ready" }),
+    false);
 
 ReactDOM.render(
     <Router history={hashHistory}>

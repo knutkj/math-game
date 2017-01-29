@@ -1,89 +1,22 @@
-@fontSize: 8rem;
-@emoticonSize: 8rem;
+@fontSize:                 8rem;
+@emoticonSize:             8rem;
+@correctAnimationDuration:  .3s;
+@correctAnimationDelay:     .5s;
+
+//
+// Task host.
+//
 
 #taskHost {
-    height: 100vh;
-    transition: background-color 1s;
-    font-size: @fontSize;
-    /*width: @fontSize * 2.5;*/
-    position: relative;
-    text-align: center;
-
-    &:before {
-        content: "";
-        height: 100%;
-        display: inline-block;
-        vertical-align: middle;
-    }
-}
-
-@keyframes new {
-    from {
-        transform: translate(0, -100vh);
-    }
-    to {
-        transform: translate(0, 0);
-    }
-}
-
-//
-// Correct.
-//
-
-@correctAnimationDuration: .3s;
-@correctAnimationDelay:    .5s;
-
-.correct {
-    animation:
-        correct
-        @correctAnimationDuration
-        ease-in
-        @correctAnimationDelay
-        forwards;
-}
-
-#correctReaction {
-    opacity: 1;
     position: absolute;
-    width: @emoticonSize;
-    height: @emoticonSize;
-    top: -@emoticonSize;
-    left: 50%;
-    transform: translate(-(@emoticonSize / 2), 0);
-    transition: opacity 0;
-}
-
-@keyframes correct {
-    from {
-        transform: translate(0, 0);
-    }
-    to {
-        transform: translate(0, calc(~"50vh + " @emoticonSize / 2));
-    }
-}
-
-//
-// Wrong.
-//
-
-.wrong {
-    animation: wrong .3s ease-in-out;
-}
-
-#wrongReaction {
-    position: absolute;
-    width: 4rem;
-    height: 4rem;
+    top: 0;
+    right: 0;
     bottom: 0;
-    left: 50%;
-    transform: translate(-2rem, 4rem);
-    transition: transform 0s;
-}
+    left: 0;
+    overflow: hidden;
 
-.wrong {
-    #wrongReaction {
-        transform: translate(-2rem, -1rem);
-        transition: transform .3s;
+    &.wrong {
+        animation: wrong .3s ease-in-out;
     }
 }
 
@@ -109,10 +42,95 @@
 }
 
 //
-// Clock.
+// Task container.
 //
 
-.clock {
+#taskContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    .correct & {
+        animation:
+            correct
+            @correctAnimationDuration
+            ease-in
+            @correctAnimationDelay
+            forwards;
+    }
+}
+
+@keyframes correct {
+    from {
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+    to {
+        top: 100%;
+        transform: translate(-50%, 0);
+    }
+}
+
+//
+// Correct emoji.
+//
+
+#correctReaction {
+    opacity: 1;
+    position: absolute;
+    width: @emoticonSize;
+    height: @emoticonSize;
+    top: -@emoticonSize / 2;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0;
+
+    .correct & {
+        animation:
+            correctEmoji
+            @correctAnimationDuration
+            ease-in
+            @correctAnimationDelay
+            forwards;
+    }
+}
+
+@keyframes correctEmoji {
+    from {
+        top: -@emoticonSize;
+    }
+    to {
+        top: 50%;
+    }
+}
+
+//
+// Wrong emoji.
+//
+
+#wrongReaction {
+    position: absolute;
+    width: 4rem;
+    height: 4rem;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-2rem, 4rem);
+    transition: transform 0s;
+}
+
+.wrong {
+    #wrongReaction {
+        transform: translate(-2rem, -1rem);
+        transition: transform .3s;
+    }
+}
+
+//
+// Timer.
+//
+
+.timer {
     position: absolute;
     padding: 20px;
     top: 0;
@@ -140,3 +158,4 @@
     bottom: 10px;
     display: none;
 }
+
