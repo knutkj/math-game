@@ -6,21 +6,25 @@
     display: block;
     list-style: none;
     margin: 0;
-    padding: 20px;
+    padding: 0 50px 10px 50px;
     text-align: center;
 
     li {
+        box-sizing: border-box;
         list-style-type: none;
         display: inline-block;
-        margin: .2rem;
+        width: 100/11%;
+        max-width: 50px;
+        min-width: 35px;
+        padding: 5px;
     }
 
     [role=button] {
+        display: block;
         background: #555;
         color: white;
         border-radius: 10px;
         box-shadow: 0 0 10px black;
-        padding: .1rem .3rem;
         cursor: pointer;
 
         &:active {

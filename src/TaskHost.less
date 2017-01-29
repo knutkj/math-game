@@ -81,10 +81,9 @@
     position: absolute;
     width: @correctEmojiSize;
     height: @correctEmojiSize;
-    top: -@correctEmojiSize / 2;
+    top: 0;
     left: 50%;
-    transform: translate(-50%, -50%);
-    transition: opacity 0;
+    transform: translate(-50%, -100%);
 
     .correct & {
         animation:
@@ -98,10 +97,12 @@
 
 @keyframes correctEmoji {
     from {
-        top: -@correctEmojiSize / 2;
+        top: 0;
+        transform: translate(-50%, -100%);
     }
     to {
         top: 50%;
+        transform: translate(-50%, -50%);
     }
 }
 
@@ -113,15 +114,15 @@
     position: absolute;
     width: @wrongEmojiSize;
     height: @wrongEmojiSize;
-    bottom: -@wrongEmojiSize;
+    bottom: 0;
     left: 50%;
-    transform: translate(-@wrongEmojiSize / 2, 0);
+    transform: translate(-50%, 100%);
     transition: transform 0s;
 }
 
 .wrong {
     #wrongReaction {
-        transform: translate(-@wrongEmojiSize / 2, -@wrongEmojiSize - 5vh);
+        transform: translate(-50%, -50%);
         transition: transform .3s;
     }
 }

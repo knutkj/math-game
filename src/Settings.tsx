@@ -1,6 +1,8 @@
 /// <reference types="cordova" />
 /// <reference types="cordova-plugin-inappbrowser" />
 
+import { formatString } from "./string";
+
 declare global {
     interface Cordova {
         InAppBrowser: InAppBrowser;
@@ -70,17 +72,4 @@ export default class Settings extends React.Component<{}, ISettinsState> {
         this.unsubscribe();
     }
 
-}
-
-function formatString (template: string, ...args: any[]): string {
-    return args.reduce(
-        (prev, value, i) => prev.replace(`{${i}}`, getValue(value)),
-        template);
-}
-
-function getValue (value: string | boolean): string {
-    if (typeof value === "boolean") {
-        return strings[value ? "yes" : "no"];
-    }
-    return value;
 }
