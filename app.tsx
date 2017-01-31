@@ -14,6 +14,7 @@ import store from "./src/store";
 //
 import "./src/AdditionTask.tsx";
 //import "./src/SubtractionTask.tsx";
+import "./src/DoubleTask.tsx";
 
 const appElement = document.querySelector("#app");
 if (!appElement) {
