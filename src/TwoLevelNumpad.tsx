@@ -2,7 +2,7 @@ import { range } from "underscore";
 import * as React from "react";
 import store from "./store";
 
-const styles = require<any>("./Numpad.less");
+const styles = require<any>("./TwoLevelNumpad.less");
 
 interface ITwoLevelNumpadState {
     readonly start: number | null;
@@ -23,12 +23,33 @@ export default class TwoLevelNumpad
     }
 
     renderFirstLevel() { return (
-        <ul className={styles.numpad}>
+        <ul className={styles.twoLevelNumpad}>
             {getKeys().map(n =>
-            <li key={n}>
-                <div role="button" onClick={() => this.onFirstLevelClick(n)}>
-                    {n*10}
-                </div>
+            <li className={styles.item} key={n}>
+                <FirstLevelKey
+                    label={n}
+                    onClick={() => this.onFirstLevelClick(n)} />
+            </li>)}
+            <li className={styles.item} key={100}>
+                <SecondLevelKey
+                    label={100}
+                    onClick={() => this.onSecondLevelClick(100)} />
+            </li>
+        </ul>);
+    }
+
+    renderSecondLevel() { return (
+        <ul className={styles.twoLevelNumpad}>
+            <li className={styles.item} key="back">
+                <SecondLevelKey
+                    label=".."
+                    onClick={() => this.onBackToFirstLevelClick()} />
+            </li>
+            {getKeys().map(n => n + this.state.start * 10).map(n =>
+            <li className={styles.item} key={n}>
+                <SecondLevelKey
+                    label={n}
+                    onClick={() => this.onSecondLevelClick(n)} />
             </li>)}
         </ul>);
     }
@@ -37,24 +58,34 @@ export default class TwoLevelNumpad
         this.setState({ start: n });
     }
 
-    renderSecondLevel() { return (
-        <ul className={styles.numpad}>
-            {getKeys().map(n => n + this.state.start * 10).map(n =>
-            <li key={n}>
-                <div role="button" onClick={() => this.onSecondLevelClick(n)}>
-                    {n}
-                </div>
-            </li>)}
-        </ul>);
-    }
-
     onSecondLevelClick(n: number) {
         this.setState({ start: null });
         store.dispatch({ type: "answer-suggested", value: n });
     }
 
+    onBackToFirstLevelClick() {
+        this.setState({ start: null });
+    }
+
 }
 
 export function getKeys() {
-    return range(0, 11);
+    return range(0, 10);
 }
+
+const FirstLevelKey = ({label, onClick}) =>
+    <div
+        className={styles.firstLevelKey}
+        role="button"
+        onClick={onClick}>
+        <div className={styles.key}></div>
+        <div className={styles.key}></div>
+        <div className={styles.key}>{`${label}..`}</div>
+    </div>;
+
+const SecondLevelKey = ({label, onClick}) =>
+    <div
+        className={styles.secondLevelKey}
+        role="button" onClick={onClick}>
+        {label}
+    </div>;
