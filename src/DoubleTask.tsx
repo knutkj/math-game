@@ -51,8 +51,8 @@ const Blocks = ({ answer }: { answer: number; }) =>
             </div>)}
     </div>;
 
-const blockSize =   14;
-const blockMargin =  4;
+const blockSize =   10;
+const blockMargin =  2;
 const groupWidth = (blockSize + blockMargin) * 2 + blockMargin;
 const groupHeight = (blockSize + blockMargin) * 5 + blockMargin;
 
