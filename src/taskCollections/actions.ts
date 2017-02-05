@@ -1,9 +1,4 @@
-export interface IAddTaskCollectionAction {
-    type: "ADD_TASK_COLLECTION";
-    name: string;
-    tasks: any[];
-    keyboard: string;
-}
+import { IAddTaskCollectionAction } from "./reducer";
 
 export function addTaskCollection(
     name: string,

@@ -1,8 +1,9 @@
 import * as React from "react";
 import { getSelectedTasks } from "../store";
-import store, { TaskState, ITaskWrapper, KeyBoardType } from "../store";
+import store, { ITaskWrapper, KeyBoardType } from "../store";
 import Numpad from "../Numpad";
 import TwoLevelNumpad from "../TwoLevelNumpad";
+import { ITask, TaskState } from "../Task";
 
 const styles = require<any>("./TaskHost.less");
 
@@ -12,32 +13,6 @@ const styles = require<any>("./TaskHost.less");
 const requireSvg = require.context("../../images", true, /set[0-9]\/(correct|wrong)\/[^/]+\.svg$/);
 const correctEmoticons = requireSvg.keys().filter(k => /correct\/[^/]+$/.test(k));
 const wrongEmoticons = requireSvg.keys().filter(k => /wrong\/[^/]+$/.test(k));
-
-export interface ITaskProps {
-    readonly task: string;
-    readonly state: TaskState;
-    readonly value: number | null;
-    readonly answer: number;
-}
-
-export interface ITask {
-    readonly task: string;
-    readonly component: React.ComponentClass<ITaskProps>;
-    numCorrect: number;
-    numWrong: number;
-    getState(value: number): TaskState;
-    getAnswer(): number;
-    getNumbers(): number[];
-}
-
-export interface ITaskCollection {
-    readonly name: string;
-    readonly tasks: ITask[];
-    readonly keyboard: {
-        name: KeyBoardType,
-        props?: any
-    };
-}
 
 function pickEmoticon(emoticon: string[]): string {
     const index = Math.round(Math.random() * emoticon.length - .5);

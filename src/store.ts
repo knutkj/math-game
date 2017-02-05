@@ -1,9 +1,8 @@
 import { indexBy, flatten } from "underscore";
 import { createStore } from "redux";
-import { ITaskCollection, ITask } from "./task/TaskHost";
-import taskCollectionsReducer from "./taskCollections/reducer";
+import { ITask } from "./Task";
+import taskCollectionsReducer, { ITaskCollection } from "./taskCollections/reducer";
 
-export type TaskState = "active" | "correct" | "wrong";
 export type KeyBoardType = "numpad" | "two-level-numpad";
 
 interface IState {

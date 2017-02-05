@@ -1,7 +1,8 @@
 import { indexBy, flatten, unique } from "underscore";
 import * as React from "react";
 import { Link } from "react-router";
-import { ITaskCollection, ITask } from "../task/TaskHost";
+import { ITaskCollection } from "../taskCollections/reducer";
+import { ITask } from "../Task";
 import store from "../store";
 
 const styles = require<any>("./TaskCollectionPicker.css");

@@ -1,8 +1,5 @@
-import { IAddTaskCollectionAction } from "./actions";
-import { ITaskCollection } from "../task/TaskHost";
+import { ITask } from "../Task";
 import { KeyBoardType } from "../store";
-
-type TaskCollectionsActions = IAddTaskCollectionAction;
 
 export default function taskCollectionsReducer (
     state: ReadonlyArray<ITaskCollection> = [],
@@ -21,4 +18,30 @@ export default function taskCollectionsReducer (
     }
 
     return state;
+}
+
+//
+// State model.
+//
+
+export interface ITaskCollection {
+    readonly name: string;
+    readonly tasks: ITask[];
+    readonly keyboard: {
+        name: KeyBoardType,
+        props?: any
+    };
+}
+
+//
+// Supported actions.
+//
+
+type TaskCollectionsActions = IAddTaskCollectionAction;
+
+export interface IAddTaskCollectionAction {
+    type: "ADD_TASK_COLLECTION";
+    name: string;
+    tasks: any[];
+    keyboard: string;
 }

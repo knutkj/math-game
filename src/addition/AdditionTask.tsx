@@ -1,7 +1,7 @@
 import * as React from "react";
-import { ITask } from "../task/TaskHost";
+import { ITask, TaskState } from "../Task";
 import { flatten, range } from "underscore";
-import store, { TaskState } from "../store";
+import store from "../store";
 import { addTaskCollection } from "../taskCollections/actions";
 
 const styles = require<any>("./AdditionTask.less");

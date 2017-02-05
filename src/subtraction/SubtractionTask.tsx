@@ -1,7 +1,7 @@
 import { range, flatten } from "underscore";
 import * as React from "react";
-import { ITask } from "../task/TaskHost";
-import store, { TaskState } from "../store";
+import { ITask, TaskState } from "../Task";
+import store from "../store";
 import { addTaskCollection } from "../taskCollections/actions";
 
 const styles = require<any>("./SubtractionTask.css");
