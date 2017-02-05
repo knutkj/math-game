@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Router, IndexRoute, Route, hashHistory } from "react-router";
 import App from "./src/App";
-import TaskCollectionPicker from "./src/TaskCollectionPicker";
-import TaskHost from "./src/TaskHost";
+import TaskCollectionPicker from "./src/exercise/TaskCollectionPicker";
+import TaskHost from "./src/taskHost/TaskHost";
 import Summary from "./src/Summary";
 import Settings from "./src/Settings";
 import { getNumberOfSelectedTaskCollections } from "./src/store";
@@ -12,9 +12,9 @@ import store from "./src/store";
 //
 // Importing tasks.
 //
-import "./src/AdditionTask.tsx";
+import "./src/addition/AdditionTask.tsx";
 //import "./src/SubtractionTask.tsx";
-import "./src/DoubleTask.tsx";
+import "./src/multiplication/DoubleTask.tsx";
 
 const appElement = document.querySelector("#app");
 if (!appElement) {
