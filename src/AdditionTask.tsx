@@ -1,7 +1,8 @@
 import * as React from "react";
-import { ITask, ITaskCollection } from "./TaskHost";
+import { ITask } from "./TaskHost";
 import { flatten, range } from "underscore";
 import store, { TaskState } from "./store";
+import { addTaskCollection } from "./taskCollections/actions";
 
 const styles = require<any>("./AdditionTask.less");
 
@@ -64,41 +65,24 @@ class Addition implements ITask {
 // Adding task collections.
 //
 
-store.dispatch({
-    type: "add-task-collection",
-    value: {
-        name: "Den lille addisjonstabellen",
-        tasks: createAdditionTasks(0, 10).map(t => new Addition(t)),
-        keyboard: { name: "numpad" } 
-    } as ITaskCollection
-});
+store.dispatch(addTaskCollection(
+    "Den lille addisjonstabellen",
+    createAdditionTasks(0, 10).map(t => new Addition(t))));
 
-store.dispatch({
-    type: "add-task-collection",
-    value: {
-        name: "Pluss 10-20",
-        tasks: createAdditionTasks(10, 20).map(t => new Addition(t)),
-        keyboard: { name: "two-level-numpad" } 
-    } as ITaskCollection
-});
+store.dispatch(addTaskCollection(
+    "Pluss 10-20",
+    createAdditionTasks(10, 20).map(t => new Addition(t)),
+    "two-level-numpad"));
 
-store.dispatch({
-    type: "add-task-collection",
-    value: {
-        name: "Pluss 0-20",
-        tasks: createAdditionTasks(0, 20).map(t => new Addition(t)),
-        keyboard: { name: "two-level-numpad" } 
-    } as ITaskCollection
-});
+store.dispatch(addTaskCollection(
+    "Pluss 0-20",
+    createAdditionTasks(0, 20).map(t => new Addition(t)),
+    "two-level-numpad"));
 
-store.dispatch({
-    type: "add-task-collection",
-    value: {
-        name: "Pluss 0-30",
-        tasks: createAdditionTasks(0, 30).map(t => new Addition(t)),
-        keyboard: { name: "two-level-numpad" } 
-    } as ITaskCollection
-});
+store.dispatch(addTaskCollection(
+    "Pluss 0-30",
+    createAdditionTasks(0, 30).map(t => new Addition(t)),
+    "two-level-numpad"));
 
 export function createAdditionTasks(start: number, stop: number): string[] {
     if (start === stop) {

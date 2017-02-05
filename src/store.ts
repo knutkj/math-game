@@ -1,6 +1,7 @@
 import { indexBy, flatten } from "underscore";
 import { createStore } from "redux";
 import { ITaskCollection, ITask } from "./TaskHost";
+import taskCollectionsReducer from "./taskCollections/reducer";
 
 export type TaskState = "active" | "correct" | "wrong";
 export type KeyBoardType = "numpad" | "two-level-numpad";
@@ -29,8 +30,9 @@ interface IState {
 
 export interface IAction {
     readonly type:
+        "unknown" |
         "device-ready" |
-        "add-task-collection" |
+        "ADD_TASK_COLLECTION" |
         "task-collection-selected" |
         "task-collection-unselected" |
         "start" |
@@ -39,7 +41,7 @@ export interface IAction {
         "stop" |
         "answer-suggested" |
         "restart";
-    readonly value: any;
+    readonly value?: any;
 }
 
 const defaultState: IState = {
@@ -60,11 +62,12 @@ function reducer(state: IState = defaultState, action: IAction) {
             return { ...state, deviceReady: true };
         }
 
-        case "add-task-collection":
+        case "ADD_TASK_COLLECTION":
             return {
                 ...state,
-                taskCollections: state.taskCollections.concat(action.value),
-                selectedTaskCollections: state.selectedTaskCollections
+                taskCollections: taskCollectionsReducer(
+                    state.taskCollections,
+                    action as any)
             };
 
         case "task-collection-selected":

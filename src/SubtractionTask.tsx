@@ -2,6 +2,7 @@ import { range, flatten } from "underscore";
 import * as React from "react";
 import { ITask } from "./TaskHost";
 import store, { TaskState } from "./store";
+import { addTaskCollection } from "./taskCollections/actions";
 
 const styles = require<any>("./SubtractionTask.css");
 
@@ -32,7 +33,7 @@ class SubtractionTask
 
     renderHelp() {
         const [left] = this.props.task.split("-").map(parseInt);
-        const items: React.ReactElement<{}>[] = [];
+        const items: JSX.Element[] = [];
         let currentAnswer = this.props.value || -1;
         for (var i = 0; i < left; i++) {
             const classNames = [
@@ -90,29 +91,19 @@ class Subtraction implements ITask {
     }
 }
 
-store.dispatch({
-    type: "add-task-collection",
-    value: {
-        name: "Minus 0-10",
-        tasks: createSubtractionStrings(0, 10).map(t => new Subtraction(t))
-    }
-});
+store.dispatch(addTaskCollection(
+    "Minus 0-10",
+    createSubtractionStrings(0, 10).map(t => new Subtraction(t))));
 
-store.dispatch({
-    type: "add-task-collection",
-    value: {
-        name: "Minus 10-20",
-        tasks: createSubtractionStrings(10, 20).map(t => new Subtraction(t))
-    }
-});
+store.dispatch(addTaskCollection(
+    "Minus 10-20",
+    createSubtractionStrings(10, 20).map(t => new Subtraction(t)),
+    "two-level-numpad"));
 
-store.dispatch({
-    type: "add-task-collection",
-    value: {
-        name: "Minus 0-20",
-        tasks: createSubtractionStrings(0, 20).map(t => new Subtraction(t))
-    }
-});
+store.dispatch(addTaskCollection(
+    "Minus 0-20",
+    createSubtractionStrings(0, 20).map(t => new Subtraction(t)),
+    "two-level-numpad"));
 
 export function createSubtractionStrings(start: number, stop: number) {
     if (start === stop) {

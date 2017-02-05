@@ -1,9 +1,10 @@
 import { range } from "underscore";
 import * as React from "react";
 import store, { TaskState } from "./store"
-import { ITaskCollection, ITask } from "./TaskHost";
+import { ITask } from "./TaskHost";
 import strings from "./strings";
 import { formatString } from "./string";
+import { addTaskCollection } from "./taskCollections/actions";
 
 const styles = require<any>("./DoubleTask.less");
 
@@ -120,12 +121,7 @@ class Double implements ITask {
 // Adding task collections.
 //
 
-store.dispatch({
-    type: "add-task-collection",
-    value: {
-        name: strings.doubleTaskCollectionName,
-        tasks: range(0, 51)
-            .map(n => new Double(formatString(strings.double, n))),
-        keyboard: { name: "two-level-numpad" }
-    } as ITaskCollection
-});
+store.dispatch(addTaskCollection(
+    strings.doubleTaskCollectionName,
+    range(0, 51).map(n => new Double(formatString(strings.double, n))),
+    "two-level-numpad"));
