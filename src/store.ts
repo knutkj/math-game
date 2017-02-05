@@ -1,6 +1,6 @@
 import { indexBy, flatten } from "underscore";
 import { createStore } from "redux";
-import { ITaskCollection, ITask } from "./taskHost/TaskHost";
+import { ITaskCollection, ITask } from "./task/TaskHost";
 import taskCollectionsReducer from "./taskCollections/reducer";
 
 export type TaskState = "active" | "correct" | "wrong";

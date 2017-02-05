@@ -1,6 +1,6 @@
 import { range, flatten } from "underscore";
 import * as React from "react";
-import { ITask } from "../taskHost/TaskHost";
+import { ITask } from "../task/TaskHost";
 import store, { TaskState } from "../store";
 import { addTaskCollection } from "../taskCollections/actions";
 

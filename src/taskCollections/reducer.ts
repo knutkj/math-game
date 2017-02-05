@@ -1,5 +1,5 @@
 import { IAddTaskCollectionAction } from "./actions";
-import { ITaskCollection } from "../taskHost/TaskHost";
+import { ITaskCollection } from "../task/TaskHost";
 import { KeyBoardType } from "../store";
 
 type TaskCollectionsActions = IAddTaskCollectionAction;

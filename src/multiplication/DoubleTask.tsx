@@ -1,7 +1,7 @@
 import { range } from "underscore";
 import * as React from "react";
 import store, { TaskState } from "../store"
-import { ITask } from "../taskHost/TaskHost";
+import { ITask } from "../task/TaskHost";
 import strings from "../strings";
 import { formatString } from "../string";
 import { addTaskCollection } from "../taskCollections/actions";

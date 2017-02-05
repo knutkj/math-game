@@ -3,9 +3,9 @@ import * as ReactDOM from "react-dom";
 import { Router, IndexRoute, Route, hashHistory } from "react-router";
 import App from "./src/App";
 import TaskCollectionPicker from "./src/exercise/TaskCollectionPicker";
-import TaskHost from "./src/taskHost/TaskHost";
-import Summary from "./src/Summary";
-import Settings from "./src/Settings";
+import TaskHost from "./src/task/TaskHost";
+import Summary from "./src/exercise/Summary";
+import Settings from "./src/settings/Settings";
 import { getNumberOfSelectedTaskCollections } from "./src/store";
 import store from "./src/store";
 

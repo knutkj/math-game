@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ITask } from "../taskHost/TaskHost";
+import { ITask } from "../task/TaskHost";
 import { flatten, range } from "underscore";
 import store, { TaskState } from "../store";
 import { addTaskCollection } from "../taskCollections/actions";
