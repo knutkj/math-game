@@ -2,11 +2,12 @@ import { indexBy, flatten } from "underscore";
 import { createStore } from "redux";
 import { ITask } from "./Task";
 import taskCollectionsReducer, { ITaskCollection } from "./taskCollections/reducer";
+import settingsReducer, { ISettings } from "./settings/reducer";
 
 export type KeyBoardType = "numpad" | "two-level-numpad";
 
-interface IState {
-    readonly deviceReady: boolean;
+export interface IState {
+    readonly settings: ISettings;
     readonly taskCollections: ReadonlyArray<ITaskCollection>;
     readonly selectedTaskCollections: ReadonlyArray<string>;
     readonly startedAt: Date | null;
@@ -30,7 +31,7 @@ interface IState {
 export interface IAction {
     readonly type:
         "unknown" |
-        "device-ready" |
+        "DEVICE_READY" |
         "ADD_TASK_COLLECTION" |
         "task-collection-selected" |
         "task-collection-unselected" |
@@ -44,7 +45,7 @@ export interface IAction {
 }
 
 const defaultState: IState = {
-    deviceReady: false,
+    settings: { deviceReady: false },
     taskCollections: [],
     selectedTaskCollections: [],
     startedAt: null,
@@ -57,8 +58,13 @@ const defaultState: IState = {
 function reducer(state: IState = defaultState, action: IAction) {
     switch (action.type) {
 
-        case "device-ready": {
-            return { ...state, deviceReady: true };
+        case "DEVICE_READY": {
+            return {
+                ...state,
+                settings: settingsReducer(
+                    state.settings,
+                    action as any)
+            };
         }
 
         case "ADD_TASK_COLLECTION":
@@ -172,8 +178,4 @@ export function getSelectedTasks(): ReadonlyArray<ITaskWrapper> {
 
 export function getNumberOfSelectedTaskCollections() {
     return store.getState().selectedTaskCollections.length;
-}
-
-export function isDeviceReady() {
-    return store.getState().deviceReady;
 }

@@ -5,9 +5,10 @@ import App from "./src/App";
 import TaskCollectionPicker from "./src/exercise/TaskCollectionPicker";
 import TaskHost from "./src/task/TaskHost";
 import Summary from "./src/exercise/Summary";
-import Settings from "./src/settings/Settings";
+import Settings from "./src/settings/SettingsContainer";
 import { getNumberOfSelectedTaskCollections } from "./src/store";
 import store from "./src/store";
+import { deviceReady } from "./src/settings/actions";
 
 //
 // Importing tasks.
@@ -27,7 +28,7 @@ if (!appElement) {
 //
 document.addEventListener(
     "deviceready",
-    () => store.dispatch({ type: "device-ready" }),
+    () => store.dispatch(deviceReady()),
     false);
 
 ReactDOM.render(

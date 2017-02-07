@@ -1,7 +1,9 @@
 /// <reference types="cordova" />
 /// <reference types="cordova-plugin-inappbrowser" />
 
+import * as React from "react";
 import { formatString } from "../string";
+import strings from "../strings";
 
 declare global {
     interface Cordova {
@@ -9,31 +11,13 @@ declare global {
     }
 }
 
-import * as React from "react";
-import strings from "../strings";
-import store, { isDeviceReady } from "../store";
-
 const pageStyles = require<any>("../Page.less");
 
-interface ISettinsState {
+export interface ISettingsProps {
     readonly deviceReady: boolean;
 }
 
-export default class Settings extends React.Component<{}, ISettinsState> {
-
-    unsubscribe: () => void;
-
-    componentWillMount() {
-        this.setState(this.getState());
-        this.unsubscribe = store.subscribe(this.setState.bind(this));
-    }
-
-    getState() {
-        return {
-            ...this.state || {},
-            deviceReady: store.getState().deviceReady
-        };
-    }
+export default class Settings extends React.Component<ISettingsProps, {}> {
 
     render() { return (
         <div className={pageStyles.page}>
@@ -45,7 +29,7 @@ export default class Settings extends React.Component<{}, ISettinsState> {
                 </li> : null}
                 {window.cordova ?
                 <li>
-                    {formatString(strings.deviceReady, isDeviceReady())}
+                    {formatString(strings.deviceReady, this.props.deviceReady)}
                 </li> : null}
                 <li>
                     <a
@@ -61,15 +45,10 @@ export default class Settings extends React.Component<{}, ISettinsState> {
     }
 
     onTestBrowser(e: React.MouseEvent<HTMLAnchorElement>) {
-        if (store.getState().deviceReady) {
+        if (this.props.deviceReady) {
             e.preventDefault();
             cordova.InAppBrowser.open(
                 e.currentTarget.href, "_blank", "location=yes");
         }
     }
-
-    componentWillUnmount() {
-        this.unsubscribe();
-    }
-
 }
